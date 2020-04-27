@@ -33,11 +33,20 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
+        final String lang = "it";
+
         db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    PhraseBook phraseBook = postSnapshot.getValue(PhraseBook.class);
+                try {
+                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                        PhraseBook phraseBook = postSnapshot.getValue(PhraseBook.class);
+                        if (phraseBook.version == 1 && phraseBook.lang == lang) {
+                            //phraseBook.contents
+                        }
+                        Log.w("Error", "Failed to read value.");
+                    }
+                } catch (Exception e) {
                     Log.w("Error", "Failed to read value.");
                 }
             }
