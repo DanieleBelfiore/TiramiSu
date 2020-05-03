@@ -6,18 +6,16 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.dreamingbetter.tiramisu.entities.Content;
+import com.dreamingbetter.tiramisu.entities.ContentHistory;
 import com.dreamingbetter.tiramisu.entities.ContentRead;
 
 import java.util.List;
 
 @Dao
-public interface ContentReadDao {
-    @Query("SELECT uid FROM contentRead")
-    String[] getAllIds();
+public interface ContentHistoryDao {
+    @Query("SELECT * FROM contentHistory ORDER BY timestamp")
+    List<ContentRead> getAll();
 
     @Insert
-    void insert(ContentRead contentRead);
-
-    @Query("DELETE FROM contentRead")
-    void deleteAll();
+    void insert(ContentHistory contentHistory);
 }

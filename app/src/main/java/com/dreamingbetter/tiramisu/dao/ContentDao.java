@@ -14,17 +14,14 @@ public interface ContentDao {
     @Query("SELECT * FROM content")
     List<Content> getAll();
 
-    @Query("SELECT * FROM content WHERE uid IN (:ids)")
-    List<Content> loadAllByIds(String[] ids);
+    @Query("SELECT * FROM content WHERE uid NOT IN (:ids)")
+    List<Content> getAllNotRead(String[] ids);
 
     @Query("SELECT * FROM content WHERE uid == :uid")
     Content findByUid(String uid);
 
     @Insert
     void insertAll(Content... contents);
-
-    @Delete
-    void delete(Content content);
 
     @Query("DELETE FROM content")
     void deleteAll();

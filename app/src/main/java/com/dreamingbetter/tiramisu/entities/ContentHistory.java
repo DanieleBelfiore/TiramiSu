@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class ContentRead {
+public class ContentHistory {
     @PrimaryKey
     @NonNull
     public String uid;

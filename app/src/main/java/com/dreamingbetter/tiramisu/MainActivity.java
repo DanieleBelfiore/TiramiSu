@@ -1,7 +1,5 @@
 package com.dreamingbetter.tiramisu;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +8,8 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.types.PhraseBook;
+import com.dreamingbetter.tiramisu.utils.DailyWorker;
+import com.dreamingbetter.tiramisu.utils.Helper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,8 +23,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.room.Room;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,14 +42,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        final SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-
-        final String lang = sharedPref.getString("lang", "it");
-
         final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").build();
 
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        final String lang = Helper.getValue(getApplicationContext(), "lang", "it");
 
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
                             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                                 PhraseBook phraseBook = postSnapshot.getValue(PhraseBook.class);
 
-                                if (phraseBook.version == 1 && phraseBook.lang.equals(lang)) {
-                                    String prevPhraseBook = sharedPref.getString("phraseBook", "");
+                                if (phraseBook.lang.equals(lang)) {
+                                    String prevPhraseBook = Helper.getValue(getApplicationContext(), "phraseBook", "");
                                     String newPhraseBook = GsonUtils.toJson(phraseBook);
 
                                     if (!newPhraseBook.equals(prevPhraseBook)) {
@@ -69,11 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
                                         database.contentDao().insertAll(contents);
 
-                                        List<Content> prova = database.contentDao().getAll();
+                                        Helper.setValue(getApplicationContext(), "phraseBook", newPhraseBook);
 
-                                        SharedPreferences.Editor editor = sharedPref.edit();
-                                        editor.putString("phraseBook", newPhraseBook);
-                                        editor.commit();
+                                        PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 1, TimeUnit.HOURS).build();
+                                        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("nextQuote", ExistingPeriodicWorkPolicy.KEEP, worker);
                                     }
                                 }
                             }
@@ -86,22 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
                 Log.w("Error", "Failed to read value.", error.toException());
             }
         });
-
-        long last = sharedPref.getLong("timestamp", 0);
-
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                List<Content> prova = database.contentDao().getAll();
-            }
-        });
-    }
-
-    long now () {
-        return System.currentTimeMillis() / 1000L;
     }
 }
