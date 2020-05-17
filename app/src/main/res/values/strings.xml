@@ -1,6 +1,12 @@
 <resources>
-    <string name="app_name">Tiramisù</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="app_name" translatable="false">Tiramisù</string>
+    <string name="title_home" translatable="false">Home</string>
+
+    <string name="fa_amazon" translatable="false">\uf270 Amazon</string>
+    <string name="fa_wikipedia_w" translatable="false">\uf266 Wikipedia</string>
+
+    <string name="title_history">Storico</string>
+    <string name="title_settings">Impostazioni</string>
+    <string name="notification">Un nuovo pensiero è pronto per te!</string>
+    <string name="work_in_progress">Sto pensando a qualcosa di speciale per te!</string>
 </resources>

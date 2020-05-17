@@ -7,83 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.Fragment;
-import androidx.room.Room;
 
-import com.blankj.utilcode.util.AppUtils;
-import com.blankj.utilcode.util.FragmentUtils;
-import com.blankj.utilcode.util.GsonUtils;
 import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
-import com.dreamingbetter.tiramisu.database.AppDatabase;
-import com.dreamingbetter.tiramisu.entities.Content;
-import com.dreamingbetter.tiramisu.entities.ContentHistory;
-import com.dreamingbetter.tiramisu.entities.ContentRead;
 
-import java.util.List;
-import java.util.Random;
+import static com.blankj.utilcode.util.StringUtils.getString;
 
 public class Helper {
-    public static void getNextQuote(final Context context) {
-        final AppDatabase database = Room.databaseBuilder(context, AppDatabase.class, "db").build();
-
-        long last = Long.parseLong(getValue(context, "timestamp", "0"));
-        final long now = System.currentTimeMillis() / 1000L;
-
-        // After 24h
-        if (now - last >= 86400000) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    String[] uidRead = database.contentReadDao().getAllIds();
-                    List<Content> contentsNotRead = database.contentDao().getAllNotRead(uidRead);
-
-                    // No phrase are available
-                    if (contentsNotRead.size() == 0) {
-                        database.contentReadDao().deleteAll();
-                        uidRead = database.contentReadDao().getAllIds();
-                        contentsNotRead = database.contentDao().getAllNotRead(uidRead);
-                    }
-
-                    int index = getRandomNumberInRange(0, contentsNotRead.size() - 1);
-
-                    Content content = contentsNotRead.get(index);
-
-                    setValue(context, "content", GsonUtils.toJson(content));
-                    setValue(context, "timestamp", String.valueOf(now));
-
-                    ContentRead contentRead = new ContentRead();
-                    contentRead.uid = content.uid;
-                    contentRead.timestamp = now;
-                    database.contentReadDao().insert(contentRead);
-
-                    ContentHistory contentHistory = new ContentHistory();
-                    contentHistory.uid = content.uid;
-                    contentHistory.timestamp = now;
-                    database.contentHistoryDao().insert(contentHistory);
-
-                    if (! AppUtils.isAppForeground()) {
-                        sendNotification(context, 0, "Un nuovo pensiero è pronto per te!");
-                    }
-                }
-            });
-        }
-    }
-
-    private static int getRandomNumberInRange(int min, int max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
-
-        Random r = new Random();
-
-        return r.nextInt((max - min) + 1) + min;
-    }
-
     /* REGION SharedPreferences */
 
     public static void setValue(Context context, String key, String text) {

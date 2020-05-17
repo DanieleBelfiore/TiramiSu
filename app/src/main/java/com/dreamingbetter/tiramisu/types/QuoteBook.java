@@ -4,7 +4,7 @@ import com.dreamingbetter.tiramisu.entities.Content;
 
 import java.util.List;
 
-public class PhraseBook {
+public class QuoteBook {
     public String lang;
     public int version;
     public List<Content> contents;

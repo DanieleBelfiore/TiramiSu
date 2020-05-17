@@ -1,13 +1,17 @@
 package com.dreamingbetter.tiramisu;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.LanguageUtils;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
-import com.dreamingbetter.tiramisu.types.PhraseBook;
+import com.dreamingbetter.tiramisu.types.QuoteBook;
 import com.dreamingbetter.tiramisu.utils.DailyWorker;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,6 +31,7 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_history, R.id.navigation_settings).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").build();
 
         final String lang = Helper.getValue(getApplicationContext(), "lang", "it");
+        LanguageUtils.applyLanguage(Locale.ITALY);
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.addValueEventListener(new ValueEventListener() {
@@ -55,23 +61,23 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                                PhraseBook phraseBook = postSnapshot.getValue(PhraseBook.class);
+                                QuoteBook quoteBook = postSnapshot.getValue(QuoteBook.class);
 
-                                if (phraseBook.lang.equals(lang)) {
-                                    String prevPhraseBook = Helper.getValue(getApplicationContext(), "phraseBook", "");
-                                    String newPhraseBook = GsonUtils.toJson(phraseBook);
+                                if (quoteBook.lang.equals(lang)) {
+                                    String prevQuoteBook = Helper.getValue(getApplicationContext(), "quoteBook", "");
+                                    String newQuoteBook = GsonUtils.toJson(quoteBook);
 
-                                    if (!newPhraseBook.equals(prevPhraseBook)) {
+                                    if (!newQuoteBook.equals(prevQuoteBook)) {
                                         database.contentDao().deleteAll();
 
-                                        Content[] contents = new Content[phraseBook.contents.size()];
-                                        phraseBook.contents.toArray(contents);
+                                        Content[] contents = new Content[quoteBook.contents.size()];
+                                        quoteBook.contents.toArray(contents);
 
                                         database.contentDao().insertAll(contents);
 
-                                        Helper.setValue(getApplicationContext(), "phraseBook", newPhraseBook);
+                                        Helper.setValue(getApplicationContext(), "quoteBook", newQuoteBook);
 
-                                        PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 1, TimeUnit.HOURS).build();
+                                        PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).build();
                                         WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("nextQuote", ExistingPeriodicWorkPolicy.KEEP, worker);
                                     }
                                 }
