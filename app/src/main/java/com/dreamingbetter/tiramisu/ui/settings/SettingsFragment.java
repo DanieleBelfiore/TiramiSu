@@ -1,6 +1,7 @@
 package com.dreamingbetter.tiramisu.ui.settings;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +43,8 @@ public class SettingsFragment extends Fragment {
             });
 
             Spinner languages = root.findViewById(R.id.spinnerLanguage);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, R.array.languages_array, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, R.array.languages_array, R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
             languages.setAdapter(adapter);
 
             final String lang = Helper.getValue(activity.getApplicationContext(), "lang", "it");

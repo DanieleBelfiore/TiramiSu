@@ -13,7 +13,6 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
-import com.dreamingbetter.tiramisu.entities.ContentHistory;
 import com.dreamingbetter.tiramisu.entities.ContentRead;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,7 +35,7 @@ public class DailyWorker extends Worker {
         final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").build();
 
         long last = Long.parseLong(getValue(getApplicationContext(), "timestamp", "0"));
-        final long now = System.currentTimeMillis() / 1000L;
+        final long now = System.currentTimeMillis();
 
         // After 24h
         if (now - last >= 86400000) {
@@ -63,13 +62,10 @@ public class DailyWorker extends Worker {
 
                     ContentRead contentRead = new ContentRead();
                     contentRead.uid = content.uid;
+                    contentRead.author = content.author;
+                    contentRead.text = content.text;
                     contentRead.timestamp = now;
                     database.contentReadDao().insert(contentRead);
-
-                    ContentHistory contentHistory = new ContentHistory();
-                    contentHistory.uid = content.uid;
-                    contentHistory.timestamp = now;
-                    database.contentHistoryDao().insert(contentHistory);
 
                     EventBus.getDefault().post(new UpdateQuoteEvent());
 

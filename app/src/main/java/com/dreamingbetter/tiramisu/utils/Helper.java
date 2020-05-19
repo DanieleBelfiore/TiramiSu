@@ -40,7 +40,7 @@ public class Helper {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "default")
                 .setSmallIcon(R.drawable.ic_card_giftcard_black_24dp)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher_foreground))
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round))
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(message)
                 .setAutoCancel(true)
