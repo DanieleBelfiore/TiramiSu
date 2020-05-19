@@ -1,4 +1,4 @@
-package com.dreamingbetter.tiramisu.ui.history;
+package com.dreamingbetter.tiramisu.ui.favorite;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -11,30 +11,27 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.dreamingbetter.tiramisu.R;
-import com.dreamingbetter.tiramisu.adapters.HistoryRecyclerViewAdapter;
+import com.dreamingbetter.tiramisu.adapters.FavoriteRecyclerViewAdapter;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
-import com.dreamingbetter.tiramisu.entities.Content;
-import com.dreamingbetter.tiramisu.entities.ContentRead;
+import com.dreamingbetter.tiramisu.entities.ContentFavorite;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class HistoryFragment extends Fragment {
+public class FavoriteFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     //private OnListFragmentInteractionListener mListener;
 
-    public HistoryFragment() { }
+    public FavoriteFragment() { }
 
     @SuppressWarnings("unused")
-    public static HistoryFragment newInstance(int columnCount) {
-        HistoryFragment fragment = new HistoryFragment();
+    public static FavoriteFragment newInstance(int columnCount) {
+        FavoriteFragment fragment = new FavoriteFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -53,7 +50,7 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_history_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorite_list, container, false);
 
         final FragmentActivity activity = getActivity();
 
@@ -71,14 +68,14 @@ public class HistoryFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            final HistoryRecyclerViewAdapter adapter = new HistoryRecyclerViewAdapter(new ArrayList<ContentRead>());
+            final FavoriteRecyclerViewAdapter adapter = new FavoriteRecyclerViewAdapter(new ArrayList<ContentFavorite>());
             recyclerView.setAdapter(adapter);
 
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     adapter.clear();
-                    adapter.addAll(database.contentReadDao().getAll());
+                    adapter.addAll(database.contentFavoriteDao().getAll());
                 }
             });
         }

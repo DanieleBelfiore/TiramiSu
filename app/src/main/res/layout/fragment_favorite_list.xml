@@ -11,5 +11,5 @@
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".ui.history.HistoryFragment"
-    tools:listitem="@layout/fragment_history" />
+    tools:context=".ui.favorite.FavoriteFragment"
+    tools:listitem="@layout/fragment_favorite" />

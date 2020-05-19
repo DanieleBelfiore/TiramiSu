@@ -12,9 +12,6 @@ import java.util.List;
 
 @Dao
 public interface ContentReadDao {
-    @Query("SELECT * FROM contentRead ORDER BY timestamp DESC")
-    List<ContentRead> getAll();
-
     @Query("SELECT uid FROM contentRead")
     String[] getAllIds();
 

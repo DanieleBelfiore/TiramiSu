@@ -2,31 +2,29 @@ package com.dreamingbetter.tiramisu.adapters;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dreamingbetter.tiramisu.R;
-import com.dreamingbetter.tiramisu.entities.ContentRead;
+import com.dreamingbetter.tiramisu.entities.ContentFavorite;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecyclerViewAdapter.ViewHolder> {
-    private final List<ContentRead> mValues;
+public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewAdapter.ViewHolder> {
+    private final List<ContentFavorite> mValues;
 
-    public HistoryRecyclerViewAdapter(List<ContentRead> items) {
+    public FavoriteRecyclerViewAdapter(List<ContentFavorite> items) {
         mValues = items;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_history, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_favorite, parent, false);
 
         return new ViewHolder(view);
     }
@@ -62,7 +60,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
         notifyDataSetChanged();
     }
 
-    public void addAll(List<ContentRead> newList) {
+    public void addAll(List<ContentFavorite> newList) {
         mValues.addAll(newList);
         notifyDataSetChanged();
     }
@@ -72,7 +70,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryRecy
         public final TextView mDateView;
         public final TextView mContentView;
         public final TextView mAuthorView;
-        public ContentRead mItem;
+        public ContentFavorite mItem;
 
         public ViewHolder(View view) {
             super(view);
