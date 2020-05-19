@@ -73,7 +73,9 @@ public class DailyWorker extends Worker {
 
                     EventBus.getDefault().post(new UpdateQuoteEvent());
 
-                    if (! AppUtils.isAppForeground()) {
+                    boolean notificationsEnabled = Boolean.parseBoolean(Helper.getValue(getApplicationContext(), "notifications", "true"));
+
+                    if (notificationsEnabled && ! AppUtils.isAppForeground()) {
                         sendNotification(getApplicationContext(), 0, getString(R.string.notification));
                     }
                 }

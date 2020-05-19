@@ -9,4 +9,5 @@
     <string name="title_settings">Impostazioni</string>
     <string name="notification">Un nuovo pensiero è pronto per te!</string>
     <string name="work_in_progress">Sto pensando a qualcosa di speciale per te!</string>
+    <string name="notifications">Notifiche</string>
 </resources>
