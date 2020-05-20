@@ -1,6 +1,7 @@
 package com.dreamingbetter.tiramisu.ui.home;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
@@ -79,11 +82,11 @@ public class HomeFragment extends Fragment {
 
         TextView text = view.findViewById(R.id.content_text);
         text.setText(String.format("%s%s\"", '"', content.text));
-        YoYo.with(Techniques.FlipInX).duration(1500).playOn(text);
+        YoYo.with(Techniques.Landing).duration(1500).playOn(text);
 
         TextView author = view.findViewById(R.id.content_author);
-        author.setText(content.author);
-        YoYo.with(Techniques.FlipInX).duration(1500).playOn(author);
+        author.setText(String.format("%s ", content.author));
+        YoYo.with(Techniques.Landing).duration(1500).playOn(author);
 
         final Button favoriteButton = view.findViewById(R.id.favoriteButton);
 
@@ -94,7 +97,11 @@ public class HomeFragment extends Fragment {
 
                 if (database.contentFavoriteDao().isFavorite(content.uid) == 1) {
                     database.contentFavoriteDao().delete(content.uid);
-                    favoriteButton.setText(R.string.fa_half_star);
+
+                    Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.fa_regular);
+                    favoriteButton.setTypeface(typeface);
+
+                    Toast.makeText(activity.getApplicationContext(), R.string.removed_from_favorite, Toast.LENGTH_SHORT).show();
                 } else {
                     ContentFavorite c = new ContentFavorite();
 
@@ -105,13 +112,17 @@ public class HomeFragment extends Fragment {
 
                     database.contentFavoriteDao().insert(c);
 
-                    favoriteButton.setText(R.string.fa_star);
+                    Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.fa_solid);
+                    favoriteButton.setTypeface(typeface);
+
+                    Toast.makeText(activity.getApplicationContext(), R.string.added_to_favorite, Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         if (database.contentFavoriteDao().isFavorite(content.uid) == 1) {
-            favoriteButton.setText(R.string.fa_star);
+            Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.fa_solid);
+            favoriteButton.setTypeface(typeface);
         }
 
         Button amazonButton = view.findViewById(R.id.amazonButton);
@@ -154,5 +165,18 @@ public class HomeFragment extends Fragment {
 
         LinearLayout buttons = view.findViewById(R.id.buttons);
         buttons.setVisibility(View.VISIBLE);
+
+        ImageView shareButton = view.findViewById(R.id.shareButton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.format("\n%s%s\"", '"', content.text) + " - " + content.author + "\n\nhttps://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu");
+                sharingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.share)));
+            }
+        });
     }
 }

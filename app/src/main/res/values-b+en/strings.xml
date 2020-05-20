@@ -6,4 +6,8 @@
     <string name="notifications">Notifications</string>
     <string name="yes">Yes</string>
     <string name="alert_remove_favorite">Do you want remove it from favorites?</string>
+    <string name="share">Share with</string>
+    <string name="no_favorites">No Favorites</string>
+    <string name="added_to_favorite">Added to favorites</string>
+    <string name="removed_from_favorite">Removed from favorites</string>
 </resources>

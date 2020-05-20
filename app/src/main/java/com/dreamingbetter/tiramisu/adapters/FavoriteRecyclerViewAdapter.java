@@ -15,13 +15,17 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.ContentFavorite;
 import com.dreamingbetter.tiramisu.ui.favorite.FavoriteFragment;
+import com.dreamingbetter.tiramisu.ui.home.HomeFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,9 +34,11 @@ import java.util.Locale;
 
 public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewAdapter.ViewHolder> {
     private final List<ContentFavorite> mValues;
+    private final FavoriteFragment mFragment;
 
-    public FavoriteRecyclerViewAdapter(List<ContentFavorite> items) {
+    public FavoriteRecyclerViewAdapter(List<ContentFavorite> items, FavoriteFragment fragment) {
         mValues = items;
+        mFragment = fragment;
     }
 
     @Override
@@ -46,8 +52,8 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
 
-        holder.mContentView.setText(holder.mItem.text);
-        holder.mAuthorView.setText(holder.mItem.author);
+        holder.mContentView.setText(String.format("%s%s\"", '"', holder.mItem.text));
+        holder.mAuthorView.setText(String.format("%s ", holder.mItem.author));
 
         holder.mFavoriteButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +68,15 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
                                 AppDatabase database = Room.databaseBuilder(holder.mView.getContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
                                 database.contentFavoriteDao().delete(holder.mItem.uid);
 
+                                Toast.makeText(holder.mView.getContext(), R.string.removed_from_favorite, Toast.LENGTH_SHORT).show();
+
                                 holder.mView.setVisibility(View.GONE);
+
+                                List<ContentFavorite> dataset = database.contentFavoriteDao().getAll();
+
+                                if (dataset.isEmpty()) {
+                                    mFragment.goToHome();
+                                }
                             }
                         }).show();
             }

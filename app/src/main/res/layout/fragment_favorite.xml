@@ -32,9 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:textSize="16sp"
-            android:textStyle="italic"
-            android:fontFamily="@font/indie_flower_regular" />
+            android:textSize="14sp"
+            android:fontFamily="@font/kaushan_script_regular" />
 
         <ImageView
             android:id="@+id/item_favorite_button"
@@ -42,7 +41,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="end"
-            android:src="@drawable/ic_star_grey_24dp" />
+            android:src="@drawable/ic_star_primary_24dp" />
 
     </LinearLayout>
 

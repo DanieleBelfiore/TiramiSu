@@ -60,6 +60,7 @@ public class DailyWorker extends Worker {
             contentRead.author = content.author;
             contentRead.text = content.text;
             contentRead.timestamp = now;
+
             database.contentReadDao().insert(contentRead);
 
             EventBus.getDefault().post(new UpdateQuoteEvent());
