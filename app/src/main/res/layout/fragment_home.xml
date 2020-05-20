@@ -1,35 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
+    android:layout_margin="8dp"
+    android:orientation="vertical"
     tools:context=".ui.home.HomeFragment">
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/content_image"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:src="@drawable/test"
         android:scaleType="fitCenter"
+        android:layout_marginBottom="8dp"
         app:riv_corner_radius="16dp"
         app:riv_mutate_background="true"
         app:riv_tile_mode="clamp"
-        app:riv_oval="false"
-        app:layout_constraintBottom_toTopOf="@+id/content_text"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:riv_oval="false" />
 
     <TextView
         android:id="@+id/content_text"
@@ -38,10 +29,7 @@
         android:gravity="center"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:fontFamily="@font/kaushan_script_regular"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:fontFamily="@font/kaushan_script_regular" />
 
     <TextView
         android:id="@+id/content_author"
@@ -50,10 +38,7 @@
         android:gravity="end"
         android:textSize="24sp"
         android:textStyle="italic"
-        android:fontFamily="@font/indie_flower_regular"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:fontFamily="@font/indie_flower_regular" />
 
     <LinearLayout
         android:id="@+id/buttons"
@@ -62,10 +47,7 @@
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:visibility="invisible"
-        app:layout_constraintTop_toBottomOf="@+id/content_author"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:visibility="invisible">
 
         <Button
             android:id="@+id/favoriteButton"
@@ -105,4 +87,4 @@
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
