@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.blankj.utilcode.util.LanguageUtils;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.utils.Helper;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.Locale;
 
@@ -34,11 +35,11 @@ public class SettingsFragment extends Fragment {
         if (activity != null) {
             Switch notifications = root.findViewById(R.id.switch_notifications);
 
-            notifications.setChecked(Boolean.parseBoolean(Helper.getValue(activity.getApplicationContext(), "notifications", "true")));
+            notifications.setChecked(Hawk.get("notifications", true));
 
             notifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Helper.setValue(activity.getApplicationContext(), "notifications", String.valueOf(isChecked));
+                    Hawk.put("notifications", isChecked);
                 }
             });
 
@@ -47,7 +48,7 @@ public class SettingsFragment extends Fragment {
             adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
             languages.setAdapter(adapter);
 
-            final String lang = Helper.getValue(activity.getApplicationContext(), "lang", "it");
+            final String lang = Hawk.get("lang", "it");
 
             languages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

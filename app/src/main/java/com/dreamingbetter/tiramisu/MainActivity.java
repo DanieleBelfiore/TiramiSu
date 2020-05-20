@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.amitshekhar.DebugDB;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LanguageUtils;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
@@ -19,6 +20,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.orhanobut.hawk.Hawk;
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
 
-        final String lang = Helper.getValue(getApplicationContext(), "lang", "it");
+        final String lang = Hawk.get("lang", "it");
         LanguageUtils.applyLanguage(Locale.ITALY);
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -66,10 +70,9 @@ public class MainActivity extends AppCompatActivity {
                         QuoteBook quoteBook = postSnapshot.getValue(QuoteBook.class);
 
                         if (quoteBook.lang.equals(lang)) {
-                            String prevQuoteBook = Helper.getValue(getApplicationContext(), "quoteBook", "");
-                            String newQuoteBook = GsonUtils.toJson(quoteBook);
+                            QuoteBook prevQuoteBook = Hawk.get("quoteBook", null);
 
-                            if (!newQuoteBook.equals(prevQuoteBook)) {
+                            if (!GsonUtils.toJson(quoteBook).equals(GsonUtils.toJson(prevQuoteBook))) {
                                 database.contentDao().deleteAll();
 
                                 Content[] contents = new Content[quoteBook.contents.size()];
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 database.contentDao().insertAll(contents);
 
-                                Helper.setValue(getApplicationContext(), "quoteBook", newQuoteBook);
+                                Hawk.put("quoteBook", quoteBook);
 
                                 PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).build();
                                 WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("nextQuote", ExistingPeriodicWorkPolicy.KEEP, worker);

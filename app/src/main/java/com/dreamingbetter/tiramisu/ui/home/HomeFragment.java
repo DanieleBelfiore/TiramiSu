@@ -32,6 +32,7 @@ import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.entities.ContentFavorite;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.dreamingbetter.tiramisu.utils.UpdateQuoteEvent;
+import com.orhanobut.hawk.Hawk;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -70,7 +71,7 @@ public class HomeFragment extends Fragment {
 
         if (activity == null || view == null) return;
 
-        final Content content = GsonUtils.fromJson(Helper.getValue(activity.getApplicationContext(), "content", null), Content.class);
+        final Content content = Hawk.get("content", null);
 
         if (content == null) return;
 
@@ -120,7 +121,7 @@ public class HomeFragment extends Fragment {
                 String query = content.author.replace(" ", "+");
                 String lang = "it";
 
-                if (Helper.getValue(activity.getApplicationContext(), "lang", "it") == "en") {
+                if (Hawk.get("lang", "it").equals("en")) {
                     lang = "com";
                 }
 
@@ -139,7 +140,7 @@ public class HomeFragment extends Fragment {
                 String query = content.author.replace(" ", "_");
                 String lang = "it";
 
-                if (Helper.getValue(activity.getApplicationContext(), "lang", "it") == "en") {
+                if (Hawk.get("lang", "it").equals("en")) {
                     lang = "en";
                 }
 

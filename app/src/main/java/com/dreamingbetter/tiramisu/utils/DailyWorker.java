@@ -14,6 +14,7 @@ import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.entities.ContentRead;
+import com.orhanobut.hawk.Hawk;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -21,9 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 import static com.blankj.utilcode.util.StringUtils.getString;
-import static com.dreamingbetter.tiramisu.utils.Helper.getValue;
 import static com.dreamingbetter.tiramisu.utils.Helper.sendNotification;
-import static com.dreamingbetter.tiramisu.utils.Helper.setValue;
 
 public class DailyWorker extends Worker {
     public DailyWorker(@NonNull Context context, @NonNull WorkerParameters params) {
@@ -34,7 +33,7 @@ public class DailyWorker extends Worker {
     public Result doWork() {
         final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
 
-        long last = Long.parseLong(getValue(getApplicationContext(), "timestamp", "0"));
+        long last = Hawk.get("timestamp", 0);
         long now = System.currentTimeMillis();
 
         // After 24h
@@ -52,10 +51,9 @@ public class DailyWorker extends Worker {
             int index = getRandomNumberInRange(0, contentsNotRead.size() - 1);
 
             Content content = contentsNotRead.get(index);
-            String jsonContent = GsonUtils.toJson(content);
 
-            setValue(getApplicationContext(), "content", jsonContent);
-            setValue(getApplicationContext(), "timestamp", String.valueOf(now));
+            Hawk.put("content", content);
+            Hawk.put("timestamp", now);
 
             ContentRead contentRead = new ContentRead();
             contentRead.uid = content.uid;
@@ -66,7 +64,7 @@ public class DailyWorker extends Worker {
 
             EventBus.getDefault().post(new UpdateQuoteEvent());
 
-            boolean notificationsEnabled = Boolean.parseBoolean(Helper.getValue(getApplicationContext(), "notifications", "true"));
+            boolean notificationsEnabled = Hawk.get("notifications", true);
 
             if (notificationsEnabled && ! AppUtils.isAppForeground()) {
                 sendNotification(getApplicationContext(), 0, getString(R.string.notification));

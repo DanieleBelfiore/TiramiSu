@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">TiramiSu</string>
+    <string name="app_name" translatable="false">TiramiSu!</string>
     <string name="title_home" translatable="false">Home</string>
 
     <string name="fa_half_star" translatable="false">\uf5c0</string>
