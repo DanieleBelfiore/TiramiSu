@@ -4,4 +4,6 @@
     <string name="notification">A new gift is ready for you!</string>
     <string name="work_in_progress">I\'m thinking about something special for you!</string>
     <string name="notifications">Notifications</string>
+    <string name="yes">Yes</string>
+    <string name="alert_remove_favorite">Do you want remove it from favorites?</string>
 </resources>

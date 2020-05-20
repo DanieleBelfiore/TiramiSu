@@ -32,50 +32,45 @@ public class DailyWorker extends Worker {
 
     @Override
     public Result doWork() {
-        final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").build();
+        final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
 
         long last = Long.parseLong(getValue(getApplicationContext(), "timestamp", "0"));
-        final long now = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
 
         // After 24h
         if (now - last >= 86400000) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    String[] uidRead = database.contentReadDao().getAllIds();
-                    List<Content> contentsNotRead = database.contentDao().getAllNotRead(uidRead);
+            String[] uidRead = database.contentReadDao().getAllIds();
+            List<Content> contentsNotRead = database.contentDao().getAllNotRead(uidRead);
 
-                    // No quote are available
-                    if (contentsNotRead.size() == 0) {
-                        database.contentReadDao().deleteAll();
-                        uidRead = database.contentReadDao().getAllIds();
-                        contentsNotRead = database.contentDao().getAllNotRead(uidRead);
-                    }
+            // No quote are available
+            if (contentsNotRead.size() == 0) {
+                database.contentReadDao().deleteAll();
+                uidRead = database.contentReadDao().getAllIds();
+                contentsNotRead = database.contentDao().getAllNotRead(uidRead);
+            }
 
-                    int index = getRandomNumberInRange(0, contentsNotRead.size() - 1);
+            int index = getRandomNumberInRange(0, contentsNotRead.size() - 1);
 
-                    Content content = contentsNotRead.get(index);
-                    String jsonContent = GsonUtils.toJson(content);
+            Content content = contentsNotRead.get(index);
+            String jsonContent = GsonUtils.toJson(content);
 
-                    setValue(getApplicationContext(), "content", jsonContent);
-                    setValue(getApplicationContext(), "timestamp", String.valueOf(now));
+            setValue(getApplicationContext(), "content", jsonContent);
+            setValue(getApplicationContext(), "timestamp", String.valueOf(now));
 
-                    ContentRead contentRead = new ContentRead();
-                    contentRead.uid = content.uid;
-                    contentRead.author = content.author;
-                    contentRead.text = content.text;
-                    contentRead.timestamp = now;
-                    database.contentReadDao().insert(contentRead);
+            ContentRead contentRead = new ContentRead();
+            contentRead.uid = content.uid;
+            contentRead.author = content.author;
+            contentRead.text = content.text;
+            contentRead.timestamp = now;
+            database.contentReadDao().insert(contentRead);
 
-                    EventBus.getDefault().post(new UpdateQuoteEvent());
+            EventBus.getDefault().post(new UpdateQuoteEvent());
 
-                    boolean notificationsEnabled = Boolean.parseBoolean(Helper.getValue(getApplicationContext(), "notifications", "true"));
+            boolean notificationsEnabled = Boolean.parseBoolean(Helper.getValue(getApplicationContext(), "notifications", "true"));
 
-                    if (notificationsEnabled && ! AppUtils.isAppForeground()) {
-                        sendNotification(getApplicationContext(), 0, getString(R.string.notification));
-                    }
-                }
-            });
+            if (notificationsEnabled && ! AppUtils.isAppForeground()) {
+                sendNotification(getApplicationContext(), 0, getString(R.string.notification));
+            }
         }
 
         return Result.success();

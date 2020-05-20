@@ -8,7 +8,9 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LanguageUtils;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
+import com.dreamingbetter.tiramisu.entities.ContentFavorite;
 import com.dreamingbetter.tiramisu.types.QuoteBook;
+import com.dreamingbetter.tiramisu.ui.favorite.FavoriteFragment;
 import com.dreamingbetter.tiramisu.utils.DailyWorker;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -33,7 +35,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setIcon(R.drawable.action_bar_icon);
         }
 
-        final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").build();
+        final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
 
         final String lang = Helper.getValue(getApplicationContext(), "lang", "it");
         LanguageUtils.applyLanguage(Locale.ITALY);
@@ -59,38 +60,33 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                                QuoteBook quoteBook = postSnapshot.getValue(QuoteBook.class);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        QuoteBook quoteBook = postSnapshot.getValue(QuoteBook.class);
 
-                                if (quoteBook.lang.equals(lang)) {
-                                    String prevQuoteBook = Helper.getValue(getApplicationContext(), "quoteBook", "");
-                                    String newQuoteBook = GsonUtils.toJson(quoteBook);
+                        if (quoteBook.lang.equals(lang)) {
+                            String prevQuoteBook = Helper.getValue(getApplicationContext(), "quoteBook", "");
+                            String newQuoteBook = GsonUtils.toJson(quoteBook);
 
-                                    if (!newQuoteBook.equals(prevQuoteBook)) {
-                                        database.contentDao().deleteAll();
+                            if (!newQuoteBook.equals(prevQuoteBook)) {
+                                database.contentDao().deleteAll();
 
-                                        Content[] contents = new Content[quoteBook.contents.size()];
-                                        quoteBook.contents.toArray(contents);
+                                Content[] contents = new Content[quoteBook.contents.size()];
+                                quoteBook.contents.toArray(contents);
 
-                                        database.contentDao().insertAll(contents);
+                                database.contentDao().insertAll(contents);
 
-                                        Helper.setValue(getApplicationContext(), "quoteBook", newQuoteBook);
+                                Helper.setValue(getApplicationContext(), "quoteBook", newQuoteBook);
 
-                                        PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).build();
-                                        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("nextQuote", ExistingPeriodicWorkPolicy.KEEP, worker);
-                                    }
-                                }
+                                PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).build();
+                                WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("nextQuote", ExistingPeriodicWorkPolicy.KEEP, worker);
                             }
-                        } catch (Exception e) {
-                            Log.w("Error", "Failed to read value.");
                         }
                     }
-                });
+                } catch (Exception e) {
+                    Log.w("Error", "Failed to read value.");
+                }
             }
 
             @Override

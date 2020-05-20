@@ -20,4 +20,7 @@ public interface ContentFavoriteDao {
 
     @Insert
     void insert(ContentFavorite contentFavorite);
+
+    @Query("DELETE FROM contentFavorite WHERE uid == :uid")
+    void delete(String uid);
 }

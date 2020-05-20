@@ -25,7 +25,6 @@ import java.util.ArrayList;
 public class FavoriteFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
-    //private OnListFragmentInteractionListener mListener;
 
     public FavoriteFragment() { }
 
@@ -52,15 +51,15 @@ public class FavoriteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite_list, container, false);
 
-        final FragmentActivity activity = getActivity();
+        FragmentActivity activity = getActivity();
 
         if (activity == null) return view;
 
-        final AppDatabase database = Room.databaseBuilder(activity.getApplicationContext(), AppDatabase.class, "db").build();
+        AppDatabase database = Room.databaseBuilder(activity.getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
 
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            final RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view;
 
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -68,42 +67,21 @@ public class FavoriteFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            final FavoriteRecyclerViewAdapter adapter = new FavoriteRecyclerViewAdapter(new ArrayList<ContentFavorite>());
+            FavoriteRecyclerViewAdapter adapter = new FavoriteRecyclerViewAdapter(database.contentFavoriteDao().getAll());
             recyclerView.setAdapter(adapter);
-
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.clear();
-                    adapter.addAll(database.contentFavoriteDao().getAll());
-                }
-            });
+            adapter.notifyDataSetChanged();
         }
 
         return view;
     }
 
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        /*if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener");
-        }*/
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-
-        //mListener = null;
     }
-
-    /*public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(ContentRead item);
-    }*/
 }
