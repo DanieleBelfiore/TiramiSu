@@ -1,7 +1,6 @@
 package com.dreamingbetter.tiramisu;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.blankj.utilcode.constant.TimeConstants;
 import com.blankj.utilcode.util.GsonUtils;
