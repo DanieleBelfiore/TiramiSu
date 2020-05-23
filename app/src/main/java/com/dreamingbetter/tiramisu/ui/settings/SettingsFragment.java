@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.blankj.utilcode.util.LanguageUtils;
+import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.orhanobut.hawk.Hawk;
@@ -44,21 +45,27 @@ public class SettingsFragment extends Fragment {
             });
 
             Spinner languages = root.findViewById(R.id.spinnerLanguage);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, R.array.languages_array, R.layout.simple_spinner_item);
+            final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, R.array.languages, R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
             languages.setAdapter(adapter);
 
-            final String lang = Hawk.get("lang", "it");
+            final int lang = Hawk.get("lang", 0);
+            languages.setSelection(lang);
 
             languages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (i == 0 && !lang.equals("it")) {
-                        LanguageUtils.applyLanguage(Locale.ITALY);
-                    }
+                    if (i != lang) {
+                        Hawk.put("lang", i);
+                        Hawk.put("timestamp", 0);
 
-                    if (i == 1 && !lang.equals("en")) {
-                        LanguageUtils.applyLanguage(Locale.ENGLISH);
+                        if (i == 0) {
+                            LanguageUtils.applyLanguage(Locale.ITALY, MainActivity.class);
+                        }
+
+                        if (i == 1) {
+                            LanguageUtils.applyLanguage(Locale.US, MainActivity.class);
+                        }
                     }
                 }
 

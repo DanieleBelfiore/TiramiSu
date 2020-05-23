@@ -14,7 +14,6 @@ import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
 
 public class Helper {
-
     public static void sendNotification(Context context, int requestCode, @SuppressWarnings("SameParameterValue") String message) {
         PendingIntent pIntent = PendingIntent.getActivity(context, requestCode, new Intent(context, MainActivity.class), PendingIntent.FLAG_ONE_SHOT);
 

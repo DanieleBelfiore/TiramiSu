@@ -1,7 +1,6 @@
 package com.dreamingbetter.tiramisu.utils;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.room.Room;
@@ -9,7 +8,6 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.blankj.utilcode.util.AppUtils;
-import com.blankj.utilcode.util.GsonUtils;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
@@ -44,8 +42,7 @@ public class DailyWorker extends Worker {
             // No quote are available
             if (contentsNotRead.size() == 0) {
                 database.contentReadDao().deleteAll();
-                uidRead = database.contentReadDao().getAllIds();
-                contentsNotRead = database.contentDao().getAllNotRead(uidRead);
+                contentsNotRead = database.contentDao().getAll();
             }
 
             int index = getRandomNumberInRange(0, contentsNotRead.size() - 1);
@@ -76,12 +73,8 @@ public class DailyWorker extends Worker {
     }
 
     private static int getRandomNumberInRange(int min, int max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
+        if (min >= max) return min;
 
-        Random r = new Random();
-
-        return r.nextInt((max - min) + 1) + min;
+        return new Random().nextInt((max - min) + 1) + min;
     }
 }

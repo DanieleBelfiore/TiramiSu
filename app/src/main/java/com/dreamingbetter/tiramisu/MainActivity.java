@@ -26,6 +26,7 @@ import com.orhanobut.hawk.Hawk;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -60,35 +61,30 @@ public class MainActivity extends AppCompatActivity {
 
         final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
 
-        final String lang = Hawk.get("lang", "it");
-        LanguageUtils.applyLanguage(Locale.ITALY);
-
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        QuoteBook quoteBook = postSnapshot.getValue(QuoteBook.class);
+                    int lang = Hawk.get("lang", 0);
 
-                        if (quoteBook.lang.equals(lang)) {
-                            QuoteBook prevQuoteBook = Hawk.get("quoteBook", null);
+                    DataSnapshot postSnapshot = dataSnapshot.child(String.valueOf(lang));
+                    QuoteBook quoteBook = postSnapshot.getValue(QuoteBook.class);
+                    QuoteBook prevQuoteBook = Hawk.get("quoteBook", null);
 
-                            if (!GsonUtils.toJson(quoteBook).equals(GsonUtils.toJson(prevQuoteBook))) {
-                                database.contentDao().deleteAll();
+                    if (quoteBook != null && !GsonUtils.toJson(quoteBook).equals(GsonUtils.toJson(prevQuoteBook))) {
+                        database.contentDao().deleteAll();
 
-                                Content[] contents = new Content[quoteBook.contents.size()];
-                                quoteBook.contents.toArray(contents);
+                        Content[] contents = new Content[quoteBook.contents.size()];
+                        quoteBook.contents.toArray(contents);
 
-                                database.contentDao().insertAll(contents);
+                        database.contentDao().insertAll(contents);
 
-                                Hawk.put("quoteBook", quoteBook);
-
-                                PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).build();
-                                WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("nextQuote", ExistingPeriodicWorkPolicy.KEEP, worker);
-                            }
-                        }
+                        Hawk.put("quoteBook", quoteBook);
                     }
+
+                    PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).build();
+                    WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("nextQuote", ExistingPeriodicWorkPolicy.REPLACE, worker);
                 } catch (Exception e) {
                     Log.w("Error", "Failed to read value.");
                 }

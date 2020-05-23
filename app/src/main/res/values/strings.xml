@@ -18,4 +18,6 @@
     <string name="no_favorites">Nessun preferito</string>
     <string name="added_to_favorite">Aggiunta ai preferiti</string>
     <string name="removed_from_favorite">Rimossa dai preferiti</string>
+    <string name="italian">Italiano</string>
+    <string name="english">Inglese</string>
 </resources>

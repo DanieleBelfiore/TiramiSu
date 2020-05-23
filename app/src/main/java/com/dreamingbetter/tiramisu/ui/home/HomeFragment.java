@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment {
                 String query = content.author.replace(" ", "+");
                 String lang = "it";
 
-                if (Hawk.get("lang", "it").equals("en")) {
+                if (Hawk.get("lang", 0) == 1) {
                     lang = "com";
                 }
 
@@ -151,7 +151,7 @@ public class HomeFragment extends Fragment {
                 String query = content.author.replace(" ", "_");
                 String lang = "it";
 
-                if (Hawk.get("lang", "it").equals("en")) {
+                if (Hawk.get("lang", 0) == 1) {
                     lang = "en";
                 }
 
