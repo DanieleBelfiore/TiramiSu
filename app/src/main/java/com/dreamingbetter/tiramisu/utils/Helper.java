@@ -9,18 +9,36 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
+import androidx.room.Room;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
+import com.blankj.utilcode.constant.TimeConstants;
+import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
+import com.dreamingbetter.tiramisu.database.AppDatabase;
+import com.dreamingbetter.tiramisu.entities.Content;
+import com.dreamingbetter.tiramisu.entities.ContentRead;
+import com.orhanobut.hawk.Hawk;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Helper {
-    public static void sendNotification(Context context, int requestCode, @SuppressWarnings("SameParameterValue") String message) {
+    public static void sendNotification(Context context, int requestCode, String title, String message) {
         PendingIntent pIntent = PendingIntent.getActivity(context, requestCode, new Intent(context, MainActivity.class), PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "default")
-                .setSmallIcon(R.drawable.ic_card_giftcard_black_24dp)
+                .setSmallIcon(R.mipmap.logo_action_bar)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
-                .setContentTitle(context.getString(R.string.app_name))
+                .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
@@ -39,5 +57,63 @@ public class Helper {
         if (notificationManager != null) {
             notificationManager.notify(R.string.app_name, notificationBuilder.build());
         }
+    }
+
+    public static ContentRead updateQuote(Context context) {
+        final AppDatabase database = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
+
+        long now = System.currentTimeMillis();
+
+        String[] uidRead = database.contentReadDao().getAllIds();
+        List<Content> contentsNotRead = database.contentDao().getAllNotRead(uidRead);
+
+        // No quote are available
+        if (contentsNotRead.size() == 0) {
+            database.contentReadDao().deleteAll();
+            contentsNotRead = database.contentDao().getAll();
+        }
+
+        int index = getRandomNumberInRange(0, contentsNotRead.size() - 1);
+
+        Content content = contentsNotRead.get(index);
+
+        Hawk.put("content", content);
+        Hawk.put("timestamp", now);
+
+        ContentRead contentRead = new ContentRead();
+        contentRead.uid = content.uid;
+        contentRead.author = content.author;
+        contentRead.text = content.text;
+        contentRead.timestamp = now;
+
+        database.contentReadDao().insert(contentRead);
+
+        EventBus.getDefault().post(new UpdateQuoteEvent());
+
+        return contentRead;
+    }
+
+    private static int getRandomNumberInRange(int min, int max) {
+        if (min >= max) return min;
+
+        return new Random().nextInt((max - min) + 1) + min;
+    }
+
+    public static void addWorker(Context context, String name) {
+        // To have a new quote every day at desired time
+        Calendar schedule = Calendar.getInstance();
+
+        schedule.set(Calendar.HOUR_OF_DAY, Hawk.get("notificationHour", 8));
+        schedule.set(Calendar.MINUTE, Hawk.get("notificationMinute", 0));
+        schedule.set(Calendar.SECOND, 0);
+
+        long delay = (24 * 60) + TimeUtils.getTimeSpanByNow(schedule.getTime(), TimeConstants.MIN);
+
+        PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).setInitialDelay(delay, TimeUnit.MINUTES).build();
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(name, ExistingPeriodicWorkPolicy.KEEP, worker);
+    }
+
+    public static void removeWorker(Context context, String name) {
+        WorkManager.getInstance(context).cancelUniqueWork(name);
     }
 }

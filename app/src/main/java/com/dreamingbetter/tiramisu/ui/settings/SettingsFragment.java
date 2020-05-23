@@ -1,5 +1,6 @@
 package com.dreamingbetter.tiramisu.ui.settings;
 
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -7,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.work.WorkManager;
 
 import com.blankj.utilcode.util.LanguageUtils;
 import com.dreamingbetter.tiramisu.MainActivity;
@@ -25,6 +29,7 @@ import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.orhanobut.hawk.Hawk;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 public class SettingsFragment extends Fragment {
@@ -34,17 +39,23 @@ public class SettingsFragment extends Fragment {
         final FragmentActivity activity = getActivity();
 
         if (activity != null) {
-            Switch notifications = root.findViewById(R.id.switch_notifications);
+            final Switch notifications = root.findViewById(R.id.switch_notifications);
+            final Spinner languages = root.findViewById(R.id.spinnerLanguage);
+            final Button notificationTimeButton = root.findViewById(R.id.notificationTimeButton);
 
             notifications.setChecked(Hawk.get("notifications", true));
-
             notifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Hawk.put("notifications", isChecked);
+
+                    if (isChecked) {
+                        notificationTimeButton.setVisibility(View.VISIBLE);
+                    } else {
+                        notificationTimeButton.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
 
-            Spinner languages = root.findViewById(R.id.spinnerLanguage);
             final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, R.array.languages, R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
             languages.setAdapter(adapter);
@@ -57,7 +68,7 @@ public class SettingsFragment extends Fragment {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     if (i != lang) {
                         Hawk.put("lang", i);
-                        Hawk.put("timestamp", 0);
+                        Hawk.put("timestamp", 0L);
 
                         if (i == 0) {
                             LanguageUtils.applyLanguage(Locale.ITALY, MainActivity.class);
@@ -71,6 +82,38 @@ public class SettingsFragment extends Fragment {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {}
+            });
+
+            if (notifications.isChecked()) {
+                notificationTimeButton.setVisibility(View.VISIBLE);
+            }
+
+            String hour = String.format(Locale.ITALY, "%02d", Hawk.get("notificationHour", 8));
+            String minute = String.format(Locale.ITALY, "%02d", Hawk.get("notificationMinute", 0));
+
+            notificationTimeButton.setText(String.format("%s %s:%s", notificationTimeButton.getText(), hour, minute));
+
+            notificationTimeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Calendar schedule = Calendar.getInstance();
+                    schedule.set(Calendar.HOUR_OF_DAY, Hawk.get("notificationHour", 8));
+                    schedule.set(Calendar.MINUTE, Hawk.get("notificationMinute", 0));
+                    schedule.set(Calendar.SECOND, 0);
+
+                    TimePickerDialog mTimePicker;
+                    mTimePicker = new TimePickerDialog(activity, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            Hawk.put("notificationHour", selectedHour);
+                            Hawk.put("notificationMinute", selectedMinute);
+                            Helper.removeWorker(activity.getApplicationContext(), "nextQuote");
+                            Helper.addWorker(activity.getApplicationContext(), "nextQuote");
+                        }
+                    }, schedule.get(Calendar.HOUR_OF_DAY), schedule.get(Calendar.MINUTE), true);
+                    mTimePicker.setTitle("Select Time");
+                    mTimePicker.show();
+                }
             });
         }
 

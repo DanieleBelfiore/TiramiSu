@@ -3,12 +3,15 @@ package com.dreamingbetter.tiramisu;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
 import com.amitshekhar.DebugDB;
+import com.blankj.utilcode.constant.TimeConstants;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LanguageUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.entities.ContentFavorite;
@@ -17,6 +20,7 @@ import com.dreamingbetter.tiramisu.ui.favorite.FavoriteFragment;
 import com.dreamingbetter.tiramisu.utils.DailyWorker;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,8 +40,13 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.room.Room;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
+import androidx.work.impl.utils.futures.SettableFuture;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -83,8 +92,20 @@ public class MainActivity extends AppCompatActivity {
                         Hawk.put("quoteBook", quoteBook);
                     }
 
-                    PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).build();
-                    WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("nextQuote", ExistingPeriodicWorkPolicy.REPLACE, worker);
+                    long last = Hawk.get("timestamp", 0L);
+                    long now = System.currentTimeMillis();
+
+                    // Every 24h
+                    if (now - last >= 86400000) {
+                        Helper.updateQuote(getApplicationContext());
+                    }
+
+                    ListenableFuture<List<WorkInfo>> workersInfo = WorkManager.getInstance(getApplicationContext()).getWorkInfosForUniqueWork("nextQuote");
+                    List<WorkInfo> workers = workersInfo.get();
+
+                    if (workers == null || workers.size() == 0) {
+                        Helper.addWorker(getApplicationContext(), "nextQuote");
+                    }
                 } catch (Exception e) {
                     Log.w("Error", "Failed to read value.");
                 }

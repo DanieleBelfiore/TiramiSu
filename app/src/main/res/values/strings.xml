@@ -6,6 +6,7 @@
     <string name="fa_amazon" translatable="false">\uf270 Amazon</string>
     <string name="fa_wikipedia_w" translatable="false">\uf266 Wikipedia</string>
     <string name="fa_share_alt" translatable="false">\uf1e0</string>
+    <string name="fa_clock" translatable="false">\uf017</string>
 
     <string name="title_history">Preferiti</string>
     <string name="title_settings">Impostazioni</string>
