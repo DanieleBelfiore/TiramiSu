@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orhanobut.hawk.Hawk;
+import com.orhanobut.logger.Logger;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -106,13 +107,13 @@ public class MainActivity extends AppCompatActivity {
                         Helper.addWorker(getApplicationContext(), "nextQuote");
                     }
                 } catch (Exception e) {
-                    Log.w("Error", "Failed to read value.");
+                    Logger.w("Error", "Failed to read value.");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.w("Error", "Failed to read value.", error.toException());
+                Logger.w("Error", "Failed to read value.", error.toException());
             }
         });
     }
