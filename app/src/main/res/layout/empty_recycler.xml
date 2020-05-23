@@ -2,6 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,13 +10,15 @@
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
     android:layout_centerInParent="true"
-    android:gravity="center">
+    android:gravity="center"
+    tools:ignore="UseCompoundDrawables">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_star_border_grey_24dp" />
+        android:src="@drawable/ic_star_border_grey_24dp"
+        android:contentDescription="@string/favorite_button" />
 
     <TextView
         android:layout_width="match_parent"

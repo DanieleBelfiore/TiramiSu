@@ -116,4 +116,8 @@ public class Helper {
     public static void removeWorker(Context context, String name) {
         WorkManager.getInstance(context).cancelUniqueWork(name);
     }
+
+    public static int getResId(Context context, String category, String id) {
+        return context.getResources().getIdentifier(id, category,  context.getPackageName());
+    }
 }

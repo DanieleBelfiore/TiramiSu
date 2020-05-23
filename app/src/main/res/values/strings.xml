@@ -5,13 +5,10 @@
     <string name="fa_star" translatable="false">\uf005</string>
     <string name="fa_amazon" translatable="false">\uf270 Amazon</string>
     <string name="fa_wikipedia_w" translatable="false">\uf266 Wikipedia</string>
-    <string name="fa_share_alt" translatable="false">\uf1e0</string>
     <string name="fa_clock" translatable="false">\uf017</string>
 
     <string name="title_history">Preferiti</string>
     <string name="title_settings">Impostazioni</string>
-    <string name="notification">Un nuovo pensiero è pronto per te!</string>
-    <string name="work_in_progress">Sto pensando a qualcosa di speciale per te!</string>
     <string name="notifications">Notifiche</string>
     <string name="yes">Sì</string>
     <string name="alert_remove_favorite">Vuoi veramente rimuoverla dai preferiti?</string>
@@ -22,4 +19,6 @@
     <string name="italian">Italiano</string>
     <string name="english">Inglese</string>
     <string name="new_quote_time">Orario nuova frase</string>
+    <string name="favorite_button">Preferiti</string>
+    <string name="share_button">Condividi</string>
 </resources>
