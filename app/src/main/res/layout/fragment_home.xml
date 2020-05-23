@@ -72,7 +72,8 @@
                 android:textColor="@color/material_light_white"
                 android:text="@string/fa_star"
                 app:fontFamily="@font/fa_regular"
-                app:backgroundTint="@color/colorPrimary" />
+                app:backgroundTint="@color/colorPrimary"
+                tools:ignore="ButtonStyle" />
 
             <Button
                 android:id="@+id/amazon_button"
@@ -84,7 +85,8 @@
                 android:textColor="@color/material_light_white"
                 android:text="@string/fa_amazon"
                 app:fontFamily="@font/fa_brands"
-                app:backgroundTint="@color/colorPrimary" />
+                app:backgroundTint="@color/colorPrimary"
+                tools:ignore="ButtonStyle" />
 
             <Button
                 android:id="@+id/wikipedia_button"
@@ -94,7 +96,8 @@
                 android:textColor="@color/material_light_white"
                 android:text="@string/fa_wikipedia_w"
                 app:fontFamily="@font/fa_brands"
-                app:backgroundTint="@color/colorPrimary" />
+                app:backgroundTint="@color/colorPrimary"
+                tools:ignore="ButtonStyle" />
 
         </LinearLayout>
 

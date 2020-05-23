@@ -6,6 +6,7 @@ import com.orhanobut.hawk.Hawk;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+@SuppressWarnings("WeakerAccess")
 public class Tiramisu extends Application {
 
     @Override

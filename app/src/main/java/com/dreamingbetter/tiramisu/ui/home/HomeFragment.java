@@ -1,14 +1,9 @@
 package com.dreamingbetter.tiramisu.ui.home;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.room.Room;
 
-import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.ScreenUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
@@ -41,7 +29,6 @@ import com.dreamingbetter.tiramisu.utils.Helper;
 import com.dreamingbetter.tiramisu.utils.UpdateQuoteEvent;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.orhanobut.hawk.Hawk;
-import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,6 +37,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.Calendar;
 import java.util.Locale;
 
+@SuppressWarnings("WeakerAccess")
 public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
@@ -65,8 +53,9 @@ public class HomeFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
+    @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(UpdateQuoteEvent event) {
+    public void onMessageEvent(@SuppressWarnings("unused") UpdateQuoteEvent event) {
         updateUI(getView());
     }
 

@@ -12,11 +12,13 @@ import com.orhanobut.hawk.Hawk;
 
 import static com.dreamingbetter.tiramisu.utils.Helper.sendNotification;
 
+@SuppressWarnings("WeakerAccess")
 public class DailyWorker extends Worker {
     public DailyWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
 
+    @NonNull
     @Override
     public Result doWork() {
         ContentRead contentRead = Helper.updateQuote(getApplicationContext());

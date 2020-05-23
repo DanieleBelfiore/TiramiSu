@@ -2,7 +2,6 @@ package com.dreamingbetter.tiramisu.ui.settings;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +11,11 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.work.WorkManager;
 
 import com.blankj.utilcode.util.LanguageUtils;
 import com.dreamingbetter.tiramisu.MainActivity;
@@ -32,6 +26,7 @@ import com.orhanobut.hawk.Hawk;
 import java.util.Calendar;
 import java.util.Locale;
 
+@SuppressWarnings("WeakerAccess")
 public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);

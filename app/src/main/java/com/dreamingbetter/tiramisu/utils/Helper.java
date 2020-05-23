@@ -15,7 +15,6 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.blankj.utilcode.constant.TimeConstants;
-import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
@@ -93,7 +92,7 @@ public class Helper {
         return contentRead;
     }
 
-    private static int getRandomNumberInRange(int min, int max) {
+    private static int getRandomNumberInRange(@SuppressWarnings("SameParameterValue") int min, int max) {
         if (min >= max) return min;
 
         return new Random().nextInt((max - min) + 1) + min;

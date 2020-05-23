@@ -1,13 +1,11 @@
 package com.dreamingbetter.tiramisu.ui.favorite;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -53,7 +51,11 @@ public class FavoriteFragment extends Fragment {
     }
 
     public void goToHome() {
-        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.nav_view);
+        FragmentActivity activity = getActivity();
+
+        if (activity == null) return;
+
+        BottomNavigationView bottomNavigationView = activity.findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
     }
 
