@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment {
         author.setText(String.format("%s ", content.author));
         YoYo.with(Techniques.Landing).duration(1500).playOn(author);
 
-        final Button favoriteButton = view.findViewById(R.id.favoriteButton);
+        final Button favoriteButton = view.findViewById(R.id.favorite_button);
 
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment {
             favoriteButton.setTypeface(typeface);
         }
 
-        Button amazonButton = view.findViewById(R.id.amazonButton);
+        Button amazonButton = view.findViewById(R.id.amazon_button);
         amazonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,7 +144,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        Button wikipediaButton = view.findViewById(R.id.wikipediaButton);
+        Button wikipediaButton = view.findViewById(R.id.wikipedia_button);
         wikipediaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment {
         LinearLayout buttons = view.findViewById(R.id.buttons);
         buttons.setVisibility(View.VISIBLE);
 
-        ImageView shareButton = view.findViewById(R.id.shareButton);
+        ImageView shareButton = view.findViewById(R.id.share_button);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

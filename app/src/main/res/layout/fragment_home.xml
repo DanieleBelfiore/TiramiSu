@@ -15,7 +15,7 @@
         tools:context=".ui.home.HomeFragment">
 
         <ImageView
-            android:id="@+id/shareButton"
+            android:id="@+id/share_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
@@ -63,7 +63,7 @@
             android:visibility="invisible">
 
             <Button
-                android:id="@+id/favoriteButton"
+                android:id="@+id/favorite_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"
@@ -75,7 +75,7 @@
                 app:backgroundTint="@color/colorPrimary" />
 
             <Button
-                android:id="@+id/amazonButton"
+                android:id="@+id/amazon_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"
@@ -87,7 +87,7 @@
                 app:backgroundTint="@color/colorPrimary" />
 
             <Button
-                android:id="@+id/wikipediaButton"
+                android:id="@+id/wikipedia_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"

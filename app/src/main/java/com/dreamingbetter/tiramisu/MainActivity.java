@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
-import com.amitshekhar.DebugDB;
 import com.blankj.utilcode.constant.TimeConstants;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LanguageUtils;
@@ -70,15 +69,30 @@ public class MainActivity extends AppCompatActivity {
 
         final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
 
+        if (Hawk.get("lang", -1) < 0) {
+            Hawk.put("lang", 0);
+
+            // System Locale
+            if (Locale.getDefault().getLanguage().equals("en")) {
+                Hawk.put("lang", 1);
+            }
+        }
+
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot data) {
                 try {
+                    DataSnapshot build = data.child("release");
+
+                    if (BuildConfig.DEBUG) {
+                        build = data.child("debug");
+                    }
+
                     int lang = Hawk.get("lang", 0);
 
-                    DataSnapshot postSnapshot = dataSnapshot.child(String.valueOf(lang));
-                    QuoteBook quoteBook = postSnapshot.getValue(QuoteBook.class);
+                    DataSnapshot languageData = build.child(String.valueOf(lang));
+                    QuoteBook quoteBook = languageData.getValue(QuoteBook.class);
                     QuoteBook prevQuoteBook = Hawk.get("quoteBook", null);
 
                     if (quoteBook != null && !GsonUtils.toJson(quoteBook).equals(GsonUtils.toJson(prevQuoteBook))) {
@@ -93,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     long last = Hawk.get("timestamp", 0L);
-                    long now = System.currentTimeMillis();
 
                     // Every 24h
-                    if (now - last >= 86400000) {
+                    long diff = TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
+                    if (diff < 0 || diff >= 24) {
                         Helper.updateQuote(getApplicationContext());
                     }
 

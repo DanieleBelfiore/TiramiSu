@@ -62,8 +62,6 @@ public class Helper {
     public static ContentRead updateQuote(Context context) {
         final AppDatabase database = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
 
-        long now = System.currentTimeMillis();
-
         String[] uidRead = database.contentReadDao().getAllIds();
         List<Content> contentsNotRead = database.contentDao().getAllNotRead(uidRead);
 
@@ -76,6 +74,8 @@ public class Helper {
         int index = getRandomNumberInRange(0, contentsNotRead.size() - 1);
 
         Content content = contentsNotRead.get(index);
+
+        long now = System.currentTimeMillis();
 
         Hawk.put("content", content);
         Hawk.put("timestamp", now);

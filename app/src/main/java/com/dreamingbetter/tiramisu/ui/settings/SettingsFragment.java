@@ -40,19 +40,13 @@ public class SettingsFragment extends Fragment {
 
         if (activity != null) {
             final Switch notifications = root.findViewById(R.id.switch_notifications);
-            final Spinner languages = root.findViewById(R.id.spinnerLanguage);
-            final Button notificationTimeButton = root.findViewById(R.id.notificationTimeButton);
+            final Spinner languages = root.findViewById(R.id.spinner_language);
+            final Button notificationTimeButton = root.findViewById(R.id.new_quote_time_button);
 
             notifications.setChecked(Hawk.get("notifications", true));
             notifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Hawk.put("notifications", isChecked);
-
-                    if (isChecked) {
-                        notificationTimeButton.setVisibility(View.VISIBLE);
-                    } else {
-                        notificationTimeButton.setVisibility(View.INVISIBLE);
-                    }
                 }
             });
 
@@ -84,14 +78,7 @@ public class SettingsFragment extends Fragment {
                 public void onNothingSelected(AdapterView<?> adapterView) {}
             });
 
-            if (notifications.isChecked()) {
-                notificationTimeButton.setVisibility(View.VISIBLE);
-            }
-
-            String hour = String.format(Locale.ITALY, "%02d", Hawk.get("notificationHour", 8));
-            String minute = String.format(Locale.ITALY, "%02d", Hawk.get("notificationMinute", 0));
-
-            notificationTimeButton.setText(String.format("%s %s:%s", notificationTimeButton.getText(), hour, minute));
+            updateNotificationTimeBtn(notificationTimeButton);
 
             notificationTimeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -107,8 +94,12 @@ public class SettingsFragment extends Fragment {
                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                             Hawk.put("notificationHour", selectedHour);
                             Hawk.put("notificationMinute", selectedMinute);
+
+                            updateNotificationTimeBtn(notificationTimeButton);
+
                             Helper.removeWorker(activity.getApplicationContext(), "nextQuote");
                             Helper.addWorker(activity.getApplicationContext(), "nextQuote");
+
                         }
                     }, schedule.get(Calendar.HOUR_OF_DAY), schedule.get(Calendar.MINUTE), true);
                     mTimePicker.setTitle("Select Time");
@@ -118,5 +109,12 @@ public class SettingsFragment extends Fragment {
         }
 
         return root;
+    }
+
+    private void updateNotificationTimeBtn(Button btn) {
+        String hour = String.format(Locale.ITALY, "%02d", Hawk.get("notificationHour", 8));
+        String minute = String.format(Locale.ITALY, "%02d", Hawk.get("notificationMinute", 0));
+
+        btn.setText(String.format("%s %s:%s", getString(R.string.fa_clock), hour, minute));
     }
 }
