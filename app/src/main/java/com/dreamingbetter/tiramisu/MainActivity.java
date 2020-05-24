@@ -90,29 +90,35 @@ public class MainActivity extends AppCompatActivity {
 
                         Hawk.put("quoteBook", quoteBook);
                     }
-
-                    long last = Hawk.get("timestamp", 0L);
-
-                    // Every 24h
-                    long diff = TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
-                    if (diff < 0 || diff >= 24) {
-                        Helper.updateQuote(getApplicationContext());
-                    }
-
-                    ListenableFuture<List<WorkInfo>> workersInfo = WorkManager.getInstance(getApplicationContext()).getWorkInfosForUniqueWork("nextQuote");
-                    List<WorkInfo> workers = workersInfo.get();
-
-                    if (workers == null || workers.size() == 0) {
-                        Helper.addWorker(getApplicationContext(), "nextQuote");
-                    }
                 } catch (Exception e) {
-                    Logger.w("Error", "Failed to read value.");
+                    Logger.e("Failed to read values from database", e);
+                }
+
+                long last = Hawk.get("timestamp", 0L);
+
+                // Every 24h
+                long diff = TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
+                if (diff < 0 || diff >= 24) {
+                    Helper.updateQuote(getApplicationContext());
+                }
+
+                ListenableFuture<List<WorkInfo>> workersInfo = WorkManager.getInstance(getApplicationContext()).getWorkInfosForUniqueWork("nextQuote");
+                List<WorkInfo> workers = null;
+
+                try {
+                    workers = workersInfo.get();
+                } catch (Exception e) {
+                    Logger.e("Failed to read workers", e);
+                }
+
+                if (workers == null || workers.size() == 0) {
+                    Helper.addWorker(getApplicationContext(), "nextQuote");
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Logger.w("Error", "Failed to read value.", error.toException());
+            public void onCancelled(@NonNull DatabaseError e) {
+                Logger.e("Failed to read values from database", e);
             }
         });
     }
