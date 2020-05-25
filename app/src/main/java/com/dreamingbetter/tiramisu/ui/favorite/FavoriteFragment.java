@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.adapters.FavoriteRecyclerViewAdapter;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
-import com.dreamingbetter.tiramisu.entities.ContentFavorite;
+import com.dreamingbetter.tiramisu.entities.Content;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class FavoriteFragment extends Fragment {
 
         AppDatabase database = Room.databaseBuilder(activity.getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
 
-        List<ContentFavorite> dataset = database.contentFavoriteDao().getAll();
+        List<Content> dataset = database.contentDao().getAllFavorites();
 
         if (dataset.isEmpty()) {
             return inflater.inflate(R.layout.empty_recycler, container, false);

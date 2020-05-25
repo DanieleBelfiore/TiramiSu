@@ -7,7 +7,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.blankj.utilcode.util.AppUtils;
-import com.dreamingbetter.tiramisu.entities.ContentRead;
+import com.dreamingbetter.tiramisu.entities.Content;
 import com.orhanobut.hawk.Hawk;
 
 import static com.dreamingbetter.tiramisu.utils.Helper.sendNotification;
@@ -21,12 +21,12 @@ public class DailyWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        ContentRead contentRead = Helper.updateQuote(getApplicationContext());
+        Content content = Helper.updateQuote(getApplicationContext());
 
         boolean notificationsEnabled = Hawk.get("notifications", true);
 
         if (notificationsEnabled && ! AppUtils.isAppForeground()) {
-            sendNotification(getApplicationContext(), 0, contentRead.author, String.format("%s%s\"", '"', contentRead.text));
+            sendNotification(getApplicationContext(), 0, content.author, String.format("%s%s\"", '"', content.text));
         }
 
         return Result.success();

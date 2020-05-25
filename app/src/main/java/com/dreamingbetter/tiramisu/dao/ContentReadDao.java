@@ -8,9 +8,6 @@ import com.dreamingbetter.tiramisu.entities.ContentRead;
 
 @Dao
 public interface ContentReadDao {
-    @Query("SELECT uid FROM contentRead")
-    String[] getAllIds();
-
     @Insert
     void insert(ContentRead contentRead);
 

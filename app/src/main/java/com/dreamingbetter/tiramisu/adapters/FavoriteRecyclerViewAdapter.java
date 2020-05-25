@@ -15,16 +15,16 @@ import android.widget.Toast;
 
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
-import com.dreamingbetter.tiramisu.entities.ContentFavorite;
+import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.ui.favorite.FavoriteFragment;
 
 import java.util.List;
 
 public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewAdapter.ViewHolder> {
-    private final List<ContentFavorite> mValues;
+    private final List<Content> mValues;
     private final FavoriteFragment mFragment;
 
-    public FavoriteRecyclerViewAdapter(List<ContentFavorite> items, FavoriteFragment fragment) {
+    public FavoriteRecyclerViewAdapter(List<Content> items, FavoriteFragment fragment) {
         mValues = items;
         mFragment = fragment;
     }
@@ -61,7 +61,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
 
                                 holder.mView.setVisibility(View.GONE);
 
-                                List<ContentFavorite> dataset = database.contentFavoriteDao().getAll();
+                                List<Content> dataset = database.contentDao().getAllFavorites();
 
                                 if (dataset.isEmpty()) {
                                     mFragment.goToHome();
@@ -82,7 +82,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
         final TextView mContentView;
         final TextView mAuthorView;
         final ImageView mFavoriteButtonView;
-        ContentFavorite mItem;
+        Content mItem;
 
         ViewHolder(View view) {
             super(view);

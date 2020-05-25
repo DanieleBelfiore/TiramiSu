@@ -13,8 +13,11 @@ public interface ContentDao {
     @Query("SELECT * FROM content")
     List<Content> getAll();
 
-    @Query("SELECT * FROM content WHERE uid NOT IN (:ids)")
-    List<Content> getAllNotRead(String[] ids);
+    @Query("SELECT c.* FROM content c LEFT JOIN contentread cr ON c.uid = cr.uid WHERE cr.uid IS NULL")
+    List<Content> getAllNotRead();
+
+    @Query("SELECT c.* FROM content c JOIN contentfavorite cf ON c.uid = cf.uid ORDER BY cf.timestamp DESC")
+    List<Content> getAllFavorites();
 
     @Insert
     void insertAll(Content... contents);

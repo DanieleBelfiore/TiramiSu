@@ -110,8 +110,6 @@ public class HomeFragment extends Fragment {
                     ContentFavorite c = new ContentFavorite();
 
                     c.uid = content.uid;
-                    c.author = content.author;
-                    c.text = content.text;
                     c.timestamp = System.currentTimeMillis();
 
                     database.contentFavoriteDao().insert(c);

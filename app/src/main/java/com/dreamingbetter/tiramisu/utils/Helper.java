@@ -58,11 +58,10 @@ public class Helper {
         }
     }
 
-    public static ContentRead updateQuote(Context context) {
+    public static Content updateQuote(Context context) {
         final AppDatabase database = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
 
-        String[] uidRead = database.contentReadDao().getAllIds();
-        List<Content> contentsNotRead = database.contentDao().getAllNotRead(uidRead);
+        List<Content> contentsNotRead = database.contentDao().getAllNotRead();
 
         // No quote are available
         if (contentsNotRead.size() == 0) {
@@ -81,15 +80,13 @@ public class Helper {
 
         ContentRead contentRead = new ContentRead();
         contentRead.uid = content.uid;
-        contentRead.author = content.author;
-        contentRead.text = content.text;
         contentRead.timestamp = now;
 
         database.contentReadDao().insert(contentRead);
 
         EventBus.getDefault().post(new UpdateQuoteEvent());
 
-        return contentRead;
+        return content;
     }
 
     private static int getRandomNumberInRange(@SuppressWarnings("SameParameterValue") int min, int max) {
