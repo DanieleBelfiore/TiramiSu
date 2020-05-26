@@ -23,10 +23,12 @@ public class DailyWorker extends Worker {
     public Result doWork() {
         Content content = Helper.updateQuote(getApplicationContext());
 
-        boolean notificationsEnabled = Hawk.get("notifications", true);
+        if (content != null) {
+            boolean notificationsEnabled = Hawk.get("notifications", true);
 
-        if (notificationsEnabled && ! AppUtils.isAppForeground()) {
-            sendNotification(getApplicationContext(), 0, content.author, String.format("%s%s\"", '"', content.text));
+            if (notificationsEnabled && ! AppUtils.isAppForeground()) {
+                sendNotification(getApplicationContext(), 0, content.author, String.format("%s%s\"", '"', content.text));
+            }
         }
 
         return Result.success();

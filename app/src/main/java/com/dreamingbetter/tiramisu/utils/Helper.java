@@ -61,6 +61,10 @@ public class Helper {
     public static Content updateQuote(Context context) {
         final AppDatabase database = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
 
+        List<Content> contents = database.contentDao().getAll();
+
+        if (contents.isEmpty()) return null;
+
         List<Content> contentsNotRead = database.contentDao().getAllNotRead();
 
         // No quote are available

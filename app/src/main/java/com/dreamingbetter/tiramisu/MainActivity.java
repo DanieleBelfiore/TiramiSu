@@ -1,9 +1,12 @@
 package com.dreamingbetter.tiramisu;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.blankj.utilcode.constant.TimeConstants;
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
@@ -22,6 +25,7 @@ import com.orhanobut.logger.Logger;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -52,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setIcon(R.drawable.action_bar_icon);
         }
 
-        final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
-
         if (Hawk.get("lang", -1) < 0) {
             Hawk.put("lang", 0);
 
@@ -63,6 +65,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        ListenableFuture<List<WorkInfo>> workersInfo = WorkManager.getInstance(getApplicationContext()).getWorkInfosForUniqueWork("nextQuote");
+        List<WorkInfo> workers = null;
+
+        try {
+            workers = workersInfo.get();
+        } catch (Exception e) {
+            Logger.e("Failed to read workers", e);
+        }
+
+        if (workers == null || workers.size() == 0) {
+            Helper.addWorker(getApplicationContext(), "nextQuote");
+        }
+
+        final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.addValueEventListener(new ValueEventListener() {
             @Override
@@ -89,30 +105,11 @@ public class MainActivity extends AppCompatActivity {
                         database.contentDao().insertAll(contents);
 
                         Hawk.put("quoteBook", quoteBook);
+
+                        checkNewQuote();
                     }
                 } catch (Exception e) {
                     Logger.e("Failed to read values from database", e);
-                }
-
-                long last = Hawk.get("timestamp", 0L);
-
-                // Every 24h
-                long diff = TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
-                if (diff < 0 || diff >= 24) {
-                    Helper.updateQuote(getApplicationContext());
-                }
-
-                ListenableFuture<List<WorkInfo>> workersInfo = WorkManager.getInstance(getApplicationContext()).getWorkInfosForUniqueWork("nextQuote");
-                List<WorkInfo> workers = null;
-
-                try {
-                    workers = workersInfo.get();
-                } catch (Exception e) {
-                    Logger.e("Failed to read workers", e);
-                }
-
-                if (workers == null || workers.size() == 0) {
-                    Helper.addWorker(getApplicationContext(), "nextQuote");
                 }
             }
 
@@ -121,5 +118,31 @@ public class MainActivity extends AppCompatActivity {
                 Logger.e("Failed to read values from database", e);
             }
         });
+
+        List<Content> contents = database.contentDao().getAll();
+
+        if (contents.isEmpty() && !NetworkUtils.isConnected()) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.network_error)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            AppUtils.exitApp();
+                        }
+                    }).show();
+        }
+
+        checkNewQuote();
+    }
+
+    private void checkNewQuote() {
+        long last = Hawk.get("timestamp", 0L);
+
+        // Every 24h
+        long diff = TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
+        if (diff < 0 || diff >= 24) {
+            Helper.updateQuote(getApplicationContext());
+        }
     }
 }

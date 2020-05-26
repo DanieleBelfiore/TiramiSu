@@ -21,4 +21,7 @@
     <string name="new_quote_time">Orario nuova frase</string>
     <string name="favorite_button">Preferiti</string>
     <string name="share_button">Condividi</string>
+    <string name="ok">@android:string/ok</string>
+    <string name="network_error">Mi dispiace, ma questa applicazione ha bisogno della connessione Internet al primo utilizzo</string>
+    <string name="read_quotes">Citazioni lette</string>
 </resources>

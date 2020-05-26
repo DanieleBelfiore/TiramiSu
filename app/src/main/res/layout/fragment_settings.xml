@@ -14,10 +14,23 @@
         android:orientation="vertical"
         tools:context=".ui.settings.SettingsFragment">
 
+        <TextView
+            android:id="@+id/read_quotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/material_light_black" />
+
         <Spinner
             android:id="@+id/spinner_language"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp" />
 

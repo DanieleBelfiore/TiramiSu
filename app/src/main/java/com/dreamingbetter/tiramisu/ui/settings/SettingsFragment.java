@@ -1,6 +1,7 @@
 package com.dreamingbetter.tiramisu.ui.settings;
 
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,19 +12,24 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.room.Room;
 
 import com.blankj.utilcode.util.LanguageUtils;
 import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
+import com.dreamingbetter.tiramisu.database.AppDatabase;
+import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("WeakerAccess")
@@ -37,6 +43,7 @@ public class SettingsFragment extends Fragment {
             final Switch notifications = root.findViewById(R.id.switch_notifications);
             final Spinner languages = root.findViewById(R.id.spinner_language);
             final Button notificationTimeButton = root.findViewById(R.id.new_quote_time_button);
+            final TextView readQuotes = root.findViewById(R.id.read_quotes);
 
             notifications.setChecked(Hawk.get("notifications", true));
             notifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -101,15 +108,27 @@ public class SettingsFragment extends Fragment {
                     mTimePicker.show();
                 }
             });
+
+            readQuotes.setText(String.format(Locale.getDefault(),  "%s: %d%%", getString(R.string.read_quotes), readPercentage(activity.getApplicationContext())));
         }
 
         return root;
     }
 
     private void updateNotificationTimeBtn(Button btn) {
-        String hour = String.format(Locale.ITALY, "%02d", Hawk.get("notificationHour", 8));
-        String minute = String.format(Locale.ITALY, "%02d", Hawk.get("notificationMinute", 0));
+        String hour = String.format(Locale.getDefault(), "%02d", Hawk.get("notificationHour", 8));
+        String minute = String.format(Locale.getDefault(), "%02d", Hawk.get("notificationMinute", 0));
 
         btn.setText(String.format("%s %s:%s", getString(R.string.fa_clock), hour, minute));
+    }
+
+    private int readPercentage(Context context) {
+        AppDatabase database = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
+        List<Content> contents = database.contentDao().getAll();
+        List<Content> contentsNotRead = database.contentDao().getAllNotRead();
+
+        int result = (contents.size() - contentsNotRead.size()) * 100 / contents.size();
+
+        return result == 0 ? 1 : result;
     }
 }
