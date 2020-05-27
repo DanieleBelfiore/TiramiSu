@@ -8,11 +8,13 @@ With this application you will have the opportunity every day to receive a new p
 
 *"To be happy you have to train every day" - Alberto Casiraghy*
 
-<img alt="Logo" src="logo.png" height="150" />
+<p float="left">
+    <img alt="Logo" src="logo.png" height="150" />
 
-<a href="https://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu">
-    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100" />
-</a>
+    <a href="https://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu">
+        <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100" />
+    </a>
+</p>
 
 ## How to use this source code
 
@@ -30,8 +32,7 @@ In this project I used [Firebase Realtime Database](https://firebase.google.com/
 					"uid": "",
 					"author": "",
 					"text": ""
-				},
-                ...
+				}
             ]
         },
         {
@@ -41,8 +42,7 @@ In this project I used [Firebase Realtime Database](https://firebase.google.com/
 					"uid": "",
 					"author": "",
 					"text": ""
-				},
-                ...
+				}
             ]
         }
     ],
@@ -54,8 +54,7 @@ In this project I used [Firebase Realtime Database](https://firebase.google.com/
 					"uid": "",
 					"author": "",
 					"text": ""
-				},
-                ...
+				}
             ]
         },
         {
@@ -65,8 +64,7 @@ In this project I used [Firebase Realtime Database](https://firebase.google.com/
 					"uid": "",
 					"author": "",
 					"text": ""
-				},
-                ...
+				}
             ]
         }
     ]
