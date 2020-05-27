@@ -6,13 +6,18 @@ Happiness starts from what happens inside us, not outside.
 
 With this application you will have the opportunity every day to receive a new positive thought from great writers of the past and present to help you live your life to the fullest with culture and smile!
 
-"To be happy you have to train every day" - Alberto Casiraghy
+*"To be happy you have to train every day" - Alberto Casiraghy*
 
-<img alt="Logo" src="logo.png" width="50" />
+<div style="padding-left: 50px">
+    <img alt="Logo" src="logo.png" height="150" />
+</div>
+<div>
+    <a href="https://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu">
+        <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100" />
+    </a>
+</div>
 
-<a href="https://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu">
-    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" />
-</a>
+
 
 ## How to use this source code
 
@@ -75,7 +80,7 @@ In this project I used [Firebase Realtime Database](https://firebase.google.com/
 
 You can import this json file to insert the contents in the **Firebase Realtime Database**.
 
-If you needs more explanations, please contact me.
+If you needs more explanations, please [contact me](mailto:danielebelfiorepc@gmail.com).
 
 ## Clarification
 
@@ -87,10 +92,6 @@ Having said that, I am always willing to improve it with the help of anyone who 
 I use [SemVer](http://semver.org) for versioning. 
 
 For the versions available, see the **tags** on this repository.
-
-## Authors
-
-[Me](https://sites.google.com/view/dreamingbetter)
 
 ## Contributing
 
