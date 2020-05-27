@@ -8,16 +8,11 @@ With this application you will have the opportunity every day to receive a new p
 
 *"To be happy you have to train every day" - Alberto Casiraghy*
 
-<div style="padding-left: 50px">
-    <img alt="Logo" src="logo.png" height="150" />
-</div>
-<div>
-    <a href="https://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu">
-        <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100" />
-    </a>
-</div>
+<img alt="Logo" src="logo.png" height="150" />
 
-
+<a href="https://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu">
+    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100" />
+</a>
 
 ## How to use this source code
 
