@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        tools:context=".ui.home.HomeFragment">
+
+        <ImageView
+            android:id="@+id/share_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_share_primary_24dp"
+            android:contentDescription="@string/share_button" />
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/content_image"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="8dp"
+            app:riv_corner_radius="8dp"
+            app:riv_mutate_background="true"
+            app:riv_tile_mode="clamp"
+            app:riv_oval="false" />
+
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/kaushan_script_regular" />
+
+        <TextView
+            android:id="@+id/content_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textSize="22sp"
+            android:fontFamily="@font/kaushan_script_regular" />
+
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="invisible">
+
+            <Button
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:textColor="@color/material_light_white"
+                android:text="@string/fa_star"
+                app:fontFamily="@font/fa_regular"
+                app:backgroundTint="@color/colorPrimary"
+                tools:ignore="ButtonStyle" />
+
+            <Button
+                android:id="@+id/amazon_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:textColor="@color/material_light_white"
+                android:text="@string/fa_amazon"
+                app:fontFamily="@font/fa_brands"
+                app:backgroundTint="@color/colorPrimary"
+                tools:ignore="ButtonStyle" />
+
+            <Button
+                android:id="@+id/wikipedia_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/material_light_white"
+                android:text="@string/fa_wikipedia_w"
+                app:fontFamily="@font/fa_brands"
+                app:backgroundTint="@color/colorPrimary"
+                tools:ignore="ButtonStyle" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
