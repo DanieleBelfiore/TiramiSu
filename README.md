@@ -14,7 +14,7 @@ With this application you will have the opportunity every day to receive a new p
     <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100" />
 </a>
 
-## How to use this source code
+## How To Use This Code
 
 If you want edit this project, you have to clone this repo, then add the **google-services.json** about the project of your [Firebase Console](https://console.firebase.google.com/).
 
