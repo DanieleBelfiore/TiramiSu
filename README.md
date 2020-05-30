@@ -10,7 +10,7 @@ With this application you will have the opportunity every day to receive a new p
 
 <img alt="Logo" src="logo.png" height="150" />
 
-<a href="https://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu">
+<a href="https://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu" target="_blank">
     <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100" />
 </a>
 
