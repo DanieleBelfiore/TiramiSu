@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.blankj.utilcode.constant.TimeConstants;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.NetworkUtils;
-import com.blankj.utilcode.util.TimeUtils;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.types.QuoteBook;
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Hawk.put("quoteBook", quoteBook);
 
-                        checkNewQuote();
+                        Helper.checkNewQuote(getApplicationContext());
                     }
                 } catch (Exception e) {
                     Logger.e("Failed to read values from database", e);
@@ -135,17 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     }).show();
         }
 
-        checkNewQuote();
-    }
-
-    private void checkNewQuote() {
-        long last = Hawk.get("timestamp", 0L);
-
-        // Every 24h
-        long diff = TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
-        if (diff < 0 || diff >= 24) {
-            Helper.updateQuote(getApplicationContext());
-        }
+        Helper.checkNewQuote(getApplicationContext());
     }
 
     @Override

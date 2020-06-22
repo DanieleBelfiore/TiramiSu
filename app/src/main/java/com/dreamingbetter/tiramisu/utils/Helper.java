@@ -13,6 +13,7 @@ import androidx.room.Room;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+import androidx.work.impl.model.WorkSpec;
 
 import com.blankj.utilcode.constant.TimeConstants;
 import com.blankj.utilcode.util.TimeUtils;
@@ -107,7 +108,7 @@ public class Helper {
         schedule.set(Calendar.MINUTE, Hawk.get("notificationMinute", 0));
         schedule.set(Calendar.SECOND, 0);
 
-        long delay = (24 * 60) + TimeUtils.getTimeSpanByNow(schedule.getTime(), TimeConstants.MIN);
+        long delay = TimeUtils.getTimeSpanByNow(schedule.getTime(), TimeConstants.MIN);
 
         PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).setInitialDelay(delay, TimeUnit.MINUTES).build();
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(name, ExistingPeriodicWorkPolicy.KEEP, worker);
@@ -119,5 +120,17 @@ public class Helper {
 
     public static int getResId(Context context, String category, String id) {
         return context.getResources().getIdentifier(id, category,  context.getPackageName());
+    }
+
+    public static Content checkNewQuote(Context context) {
+        long last = Hawk.get("timestamp", 0L);
+
+        // Every 24h
+        long diff = -TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
+        if (diff >= 24) {
+            return Helper.updateQuote(context);
+        }
+
+        return null;
     }
 }
