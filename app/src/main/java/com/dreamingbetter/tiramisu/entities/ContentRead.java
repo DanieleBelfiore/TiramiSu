@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@SuppressWarnings("NullableProblems")
+@SuppressWarnings({"NullableProblems", "NotNullFieldNotInitialized"})
 @Entity
 public class ContentRead {
     @PrimaryKey

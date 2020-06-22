@@ -6,11 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -20,8 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.room.Room;
 
-import com.blankj.utilcode.util.LanguageUtils;
-import com.dreamingbetter.tiramisu.MainActivity;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
@@ -41,7 +36,6 @@ public class SettingsFragment extends Fragment {
 
         if (activity != null) {
             final Switch notifications = root.findViewById(R.id.switch_notifications);
-            final Spinner languages = root.findViewById(R.id.spinner_language);
             final Button notificationTimeButton = root.findViewById(R.id.new_quote_time_button);
             final TextView readQuotes = root.findViewById(R.id.read_quotes);
 
@@ -50,34 +44,6 @@ public class SettingsFragment extends Fragment {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Hawk.put("notifications", isChecked);
                 }
-            });
-
-            final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity, R.array.languages, R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-            languages.setAdapter(adapter);
-
-            final int lang = Hawk.get("lang", 0);
-            languages.setSelection(lang);
-
-            languages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (i != lang) {
-                        Hawk.put("lang", i);
-                        Hawk.put("timestamp", 0L);
-
-                        if (i == 0) {
-                            LanguageUtils.applyLanguage(Locale.ITALY, MainActivity.class);
-                        }
-
-                        if (i == 1) {
-                            LanguageUtils.applyLanguage(Locale.US, MainActivity.class);
-                        }
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {}
             });
 
             updateNotificationTimeBtn(notificationTimeButton);

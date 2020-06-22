@@ -2,6 +2,8 @@ package com.dreamingbetter.tiramisu;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.blankj.utilcode.constant.TimeConstants;
 import com.blankj.utilcode.util.AppUtils;
@@ -144,5 +146,25 @@ public class MainActivity extends AppCompatActivity {
         if (diff < 0 || diff >= 24) {
             Helper.updateQuote(getApplicationContext());
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.info_version) {
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.app_name) + " v" + BuildConfig.VERSION_NAME + " (build " + BuildConfig.VERSION_CODE + ")")
+                    .setCancelable(true)
+                    .setPositiveButton(R.string.ok, null).show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

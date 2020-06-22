@@ -16,4 +16,5 @@
     <string name="ok">@android:string/ok</string>
     <string name="network_error">I\'m sorry, but this app needs Internet connection at the first time</string>
     <string name="read_quotes">Quotes read</string>
+    <string name="version">Version</string>
 </resources>
