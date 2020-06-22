@@ -30,6 +30,8 @@ public class DailyWorker extends Worker {
             }
         }
 
+        Helper.addWorker(getApplicationContext(), "nextQuote");
+
         return Result.success();
     }
 }
