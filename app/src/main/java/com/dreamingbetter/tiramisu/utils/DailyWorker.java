@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.blankj.utilcode.util.AppUtils;
 import com.dreamingbetter.tiramisu.entities.Content;
 import com.orhanobut.hawk.Hawk;
 
@@ -26,10 +25,12 @@ public class DailyWorker extends Worker {
         if (content != null) {
             boolean notificationsEnabled = Hawk.get("notifications", true);
 
-            if (notificationsEnabled && ! AppUtils.isAppForeground()) {
+            if (notificationsEnabled) {
                 sendNotification(getApplicationContext(), 0, content.author, String.format("%s%s\"", '"', content.text));
             }
         }
+
+        Helper.addWorker(getApplicationContext(), "nextQuote");
 
         return Result.success();
     }

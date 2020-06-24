@@ -10,8 +10,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.room.Room;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.blankj.utilcode.constant.TimeConstants;
@@ -101,23 +100,38 @@ public class Helper {
 
     public static void addWorker(Context context, String name) {
         // To have a new quote every day at desired time
-        Calendar schedule = Calendar.getInstance();
+        Calendar currentDate = Calendar.getInstance();
+        Calendar dueDate = Calendar.getInstance();
 
-        schedule.set(Calendar.HOUR_OF_DAY, Hawk.get("notificationHour", 8));
-        schedule.set(Calendar.MINUTE, Hawk.get("notificationMinute", 0));
-        schedule.set(Calendar.SECOND, 0);
+        dueDate.set(Calendar.HOUR_OF_DAY, Hawk.get("notificationHour", 8));
+        dueDate.set(Calendar.MINUTE, Hawk.get("notificationMinute", 0));
+        dueDate.set(Calendar.SECOND, 0);
 
-        long delay = (24 * 60) + TimeUtils.getTimeSpanByNow(schedule.getTime(), TimeConstants.MIN);
+        if (dueDate.before(currentDate)) {
+            dueDate.add(Calendar.HOUR_OF_DAY, 24);
+        }
 
-        PeriodicWorkRequest worker = new PeriodicWorkRequest.Builder(DailyWorker.class, 24, TimeUnit.HOURS).setInitialDelay(delay, TimeUnit.MINUTES).build();
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(name, ExistingPeriodicWorkPolicy.KEEP, worker);
+        long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
+
+        OneTimeWorkRequest dailyWorkRequest = new OneTimeWorkRequest.Builder(DailyWorker.class).setInitialDelay(timeDiff, TimeUnit.MILLISECONDS).addTag(name).build();
+        WorkManager.getInstance(context).enqueue(dailyWorkRequest);
     }
 
     public static void removeWorker(Context context, String name) {
-        WorkManager.getInstance(context).cancelUniqueWork(name);
+        WorkManager.getInstance(context).cancelAllWorkByTag(name);
     }
 
     public static int getResId(Context context, String category, String id) {
         return context.getResources().getIdentifier(id, category,  context.getPackageName());
+    }
+
+    public static void checkNewQuote(Context context) {
+        long last = Hawk.get("timestamp", 0L);
+
+        // Every 24h
+        long diff = -TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
+        if (diff >= 24) {
+            Helper.updateQuote(context);
+        }
     }
 }

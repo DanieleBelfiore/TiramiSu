@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@SuppressWarnings("NullableProblems")
+@SuppressWarnings({"NullableProblems", "RedundantSuppression", "NotNullFieldNotInitialized"})
 @Entity
 public class Content {
     @PrimaryKey
