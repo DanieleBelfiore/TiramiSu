@@ -20,7 +20,7 @@ public class DailyWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        Content content = Helper.checkNewQuote(getApplicationContext());
+        Content content = Helper.updateQuote(getApplicationContext());
 
         if (content != null) {
             boolean notificationsEnabled = Hawk.get("notifications", true);
@@ -29,6 +29,8 @@ public class DailyWorker extends Worker {
                 sendNotification(getApplicationContext(), 0, content.author, String.format("%s%s\"", '"', content.text));
             }
         }
+
+        Helper.addWorker(getApplicationContext(), "nextQuote");
 
         return Result.success();
     }
