@@ -125,13 +125,15 @@ public class Helper {
         return context.getResources().getIdentifier(id, category,  context.getPackageName());
     }
 
-    public static void checkNewQuote(Context context) {
+    public static Content checkNewQuote(Context context) {
         long last = Hawk.get("timestamp", 0L);
 
         // Every 24h
         long diff = -TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
         if (diff >= 24) {
-            Helper.updateQuote(context);
+            return Helper.updateQuote(context);
         }
+
+        return null;
     }
 }
