@@ -99,6 +99,8 @@ public class Helper {
     }
 
     public static void addWorker(Context context, String name) {
+        WorkManager.getInstance(context).cancelAllWorkByTag(name);
+
         // To have a new quote every day at desired time
         Calendar currentDate = Calendar.getInstance();
         Calendar dueDate = Calendar.getInstance();
@@ -117,10 +119,6 @@ public class Helper {
         WorkManager.getInstance(context).enqueue(dailyWorkRequest);
     }
 
-    public static void removeWorker(Context context, String name) {
-        WorkManager.getInstance(context).cancelAllWorkByTag(name);
-    }
-
     public static int getResId(Context context, String category, String id) {
         return context.getResources().getIdentifier(id, category,  context.getPackageName());
     }
@@ -130,6 +128,7 @@ public class Helper {
 
         // Every 24h
         long diff = -TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
+
         if (diff >= 24) {
             return Helper.updateQuote(context);
         }

@@ -65,9 +65,7 @@ public class SettingsFragment extends Fragment {
 
                             updateNotificationTimeBtn(notificationTimeButton);
 
-                            Helper.removeWorker(activity.getApplicationContext(), "nextQuote");
                             Helper.addWorker(activity.getApplicationContext(), "nextQuote");
-
                         }
                     }, schedule.get(Calendar.HOUR_OF_DAY), schedule.get(Calendar.MINUTE), true);
                     mTimePicker.setTitle("Select Time");
