@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.room.Room;
@@ -35,7 +35,7 @@ public class SettingsFragment extends Fragment {
         final FragmentActivity activity = getActivity();
 
         if (activity != null) {
-            final Switch notifications = root.findViewById(R.id.switch_notifications);
+            final SwitchCompat notifications = root.findViewById(R.id.switch_notifications);
             final Button notificationTimeButton = root.findViewById(R.id.new_quote_time_button);
             final TextView readQuotes = root.findViewById(R.id.read_quotes);
 
@@ -65,9 +65,7 @@ public class SettingsFragment extends Fragment {
 
                             updateNotificationTimeBtn(notificationTimeButton);
 
-                            Helper.removeWorker(activity.getApplicationContext(), "nextQuote");
                             Helper.addWorker(activity.getApplicationContext(), "nextQuote");
-
                         }
                     }, schedule.get(Calendar.HOUR_OF_DAY), schedule.get(Calendar.MINUTE), true);
                     mTimePicker.setTitle("Select Time");

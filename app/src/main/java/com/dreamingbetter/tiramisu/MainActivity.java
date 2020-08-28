@@ -14,7 +14,6 @@ import com.dreamingbetter.tiramisu.types.QuoteBook;
 
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,8 +31,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.room.Room;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 
 import java.util.List;
 import java.util.Locale;
@@ -63,19 +60,6 @@ public class MainActivity extends AppCompatActivity {
             if (Locale.getDefault().getLanguage().equals("en")) {
                 Hawk.put("lang", 1);
             }
-        }
-
-        ListenableFuture<List<WorkInfo>> workersInfo = WorkManager.getInstance(getApplicationContext()).getWorkInfosForUniqueWork("nextQuote");
-        List<WorkInfo> workers = null;
-
-        try {
-            workers = workersInfo.get();
-        } catch (Exception e) {
-            Logger.e("Failed to read workers", e);
-        }
-
-        if (workers == null || workers.size() == 0) {
-            Helper.addWorker(getApplicationContext(), "nextQuote");
         }
 
         final AppDatabase database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
@@ -134,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Helper.checkNewQuote(getApplicationContext());
+
+        Helper.addWorker(getApplicationContext(), "nextQuote");
     }
 
     @Override
