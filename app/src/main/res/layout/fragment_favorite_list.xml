@@ -9,6 +9,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
+    android:paddingBottom="64dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".ui.favorite.FavoriteFragment"
     tools:listitem="@layout/fragment_favorite" />
