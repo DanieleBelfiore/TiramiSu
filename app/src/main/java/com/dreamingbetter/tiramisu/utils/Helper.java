@@ -30,8 +30,15 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Helper {
-    public static void sendNotification(Context context, int requestCode, String title, String message) {
+    public static void sendQuoteNotification(Context context, int requestCode, Content content) {
         PendingIntent pIntent = PendingIntent.getActivity(context, requestCode, new Intent(context, MainActivity.class), PendingIntent.FLAG_ONE_SHOT);
+
+        Intent intentAction = new Intent(context, NotificationActionReceiver.class);
+        intentAction.putExtra("action","addToFavorites");
+        intentAction.putExtra("uid",content.uid);
+
+        String title = content.author;
+        String message = String.format("%s%s\"", '"', content.text);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "default")
                 .setSmallIcon(R.mipmap.logo_action_bar)
@@ -39,8 +46,12 @@ public class Helper {
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
-                .setContentIntent(pIntent);
+                .setContentIntent(pIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .addAction(R.drawable.ic_star_primary_24dp, context.getString(R.string.add_to_favorites), PendingIntent.getBroadcast(context, requestCode, intentAction, PendingIntent.FLAG_UPDATE_CURRENT));
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -123,16 +134,15 @@ public class Helper {
         return context.getResources().getIdentifier(id, category,  context.getPackageName());
     }
 
-    public static Content checkNewQuote(Context context) {
+    public static void checkNewQuote(Context context) {
         long last = Hawk.get("timestamp", 0L);
 
         // Every 24h
         long diff = -TimeUtils.getTimeSpanByNow(last, TimeConstants.HOUR);
 
         if (diff >= 24) {
-            return Helper.updateQuote(context);
+            Helper.updateQuote(context);
         }
 
-        return null;
     }
 }

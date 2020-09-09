@@ -25,4 +25,5 @@
     <string name="network_error">Mi dispiace, ma questa applicazione ha bisogno della connessione Internet al primo utilizzo</string>
     <string name="read_quotes">Citazioni lette</string>
     <string name="version">Versione</string>
+    <string name="add_to_favorites">Aggiungi ai preferiti</string>
 </resources>

@@ -9,7 +9,7 @@ import androidx.work.WorkerParameters;
 import com.dreamingbetter.tiramisu.entities.Content;
 import com.orhanobut.hawk.Hawk;
 
-import static com.dreamingbetter.tiramisu.utils.Helper.sendNotification;
+import static com.dreamingbetter.tiramisu.utils.Helper.sendQuoteNotification;
 
 @SuppressWarnings("WeakerAccess")
 public class DailyWorker extends Worker {
@@ -26,7 +26,7 @@ public class DailyWorker extends Worker {
             boolean notificationsEnabled = Hawk.get("notifications", true);
 
             if (notificationsEnabled) {
-                sendNotification(getApplicationContext(), 0, content.author, String.format("%s%s\"", '"', content.text));
+                sendQuoteNotification(getApplicationContext(), 0, content);
             }
         }
 
