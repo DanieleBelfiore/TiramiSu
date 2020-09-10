@@ -49,7 +49,7 @@ public class Helper {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setContentIntent(pIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .addAction(R.drawable.ic_star_primary_24dp, context.getString(R.string.add_to_favorites), PendingIntent.getBroadcast(context, requestCode, intentAction, PendingIntent.FLAG_UPDATE_CURRENT));
 
