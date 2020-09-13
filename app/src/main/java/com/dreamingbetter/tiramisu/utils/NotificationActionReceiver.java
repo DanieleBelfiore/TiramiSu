@@ -21,13 +21,14 @@ public class NotificationActionReceiver extends BroadcastReceiver {
 
             if (uid != null) {
                 addToFavorites(context, uid);
+
+                NotificationManagerCompat.from(context).cancel(R.string.app_name);
             }
         }
 
         //This is used to dismiss the notification and close the tray
-        Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        NotificationManagerCompat.from(context).cancel(R.string.app_name);
-        context.sendBroadcast(it);
+        //Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        //context.sendBroadcast(it);
     }
 
     public void addToFavorites(Context context, String uid) {
