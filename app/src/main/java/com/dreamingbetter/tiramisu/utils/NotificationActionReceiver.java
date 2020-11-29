@@ -16,11 +16,11 @@ public class NotificationActionReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getStringExtra("action");
 
-        if (action != null && action.equals("addToFavorites")) {
+        if (action != null && action.equals("addOrRemoveToFavorites")) {
             String uid = intent.getStringExtra("uid");
 
             if (uid != null) {
-                addToFavorites(context, uid);
+                addOrRemoveToFavorites(context, uid);
 
                 NotificationManagerCompat.from(context).cancel(R.string.app_name);
             }
@@ -31,14 +31,18 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         //context.sendBroadcast(it);
     }
 
-    public void addToFavorites(Context context, String uid) {
+    public void addOrRemoveToFavorites(Context context, String uid) {
         final AppDatabase database = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
 
-        ContentFavorite c = new ContentFavorite();
+        if (database.contentFavoriteDao().isFavorite(uid) == 1) {
+            database.contentFavoriteDao().delete(uid);
+        } else {
+            ContentFavorite c = new ContentFavorite();
 
-        c.uid = uid;
-        c.timestamp = System.currentTimeMillis();
+            c.uid = uid;
+            c.timestamp = System.currentTimeMillis();
 
-        database.contentFavoriteDao().insert(c);
+            database.contentFavoriteDao().insert(c);
+        }
     }
 }
