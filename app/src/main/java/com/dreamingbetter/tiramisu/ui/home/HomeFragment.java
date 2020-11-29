@@ -175,7 +175,7 @@ public class HomeFragment extends Fragment {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.format("\n%s%s\"", '"', content.text) + " - " + content.author + "\n\nhttps://play.google.com/store/apps/details?id=com.dreamingbetter.tiramisu");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.format("\n%s%s\"", '"', content.text) + " - " + content.author + "\n\n" + getString(R.string.app_name) + "\nAvailable on Google Play Store");
                 sharingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(Intent.createChooser(sharingIntent, getString(R.string.share)));
             }

@@ -34,11 +34,13 @@ public class Helper {
         PendingIntent pIntent = PendingIntent.getActivity(context, requestCode, new Intent(context, MainActivity.class), PendingIntent.FLAG_ONE_SHOT);
 
         Intent intentAction = new Intent(context, NotificationActionReceiver.class);
-        intentAction.putExtra("action","addToFavorites");
+        intentAction.putExtra("action","addOrRemoveToFavorites");
         intentAction.putExtra("uid",content.uid);
 
         String title = content.author;
         String message = String.format("%s%s\"", '"', content.text);
+
+        AppDatabase database = Room.databaseBuilder(context, AppDatabase.class, "db").allowMainThreadQueries().build();
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "default")
                 .setSmallIcon(R.mipmap.logo_action_bar)
@@ -51,7 +53,10 @@ public class Helper {
                 .setContentIntent(pIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .addAction(R.drawable.ic_star_primary_24dp, context.getString(R.string.add_to_favorites), PendingIntent.getBroadcast(context, requestCode, intentAction, PendingIntent.FLAG_UPDATE_CURRENT));
+                .addAction(R.drawable.ic_star_primary_24dp,
+                        (database.contentFavoriteDao().isFavorite(content.uid) == 1) ? context.getString(R.string.removed_from_favorite) : context.getString(R.string.add_to_favorites),
+                        PendingIntent.getBroadcast(context, requestCode, intentAction, PendingIntent.FLAG_UPDATE_CURRENT)
+                );
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
