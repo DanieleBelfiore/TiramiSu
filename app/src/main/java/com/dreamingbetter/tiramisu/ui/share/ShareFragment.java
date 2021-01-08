@@ -51,7 +51,7 @@ public class ShareFragment extends Fragment {
         RoundedImageView monthImage = view.findViewById(R.id.content_image);
 
         // Set the month image
-        String month = String.format(Locale.getDefault(), "month_%02d", Calendar.getInstance().get(Calendar.MONTH));
+        String month = String.format(Locale.getDefault(), "month_%02d", Calendar.getInstance().get(Calendar.MONTH) + 1);
         monthImage.setImageResource(Helper.getResId(activity.getApplicationContext(), "drawable", month));
 
         TextView text = view.findViewById(R.id.content_text);

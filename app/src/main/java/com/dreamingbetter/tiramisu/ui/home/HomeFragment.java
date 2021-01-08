@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
         RoundedImageView monthImage = view.findViewById(R.id.content_image);
 
         // Set the month image
-        String month = String.format(Locale.getDefault(), "month_%02d", Calendar.getInstance().get(Calendar.MONTH));
+        String month = String.format(Locale.getDefault(), "month_%02d", Calendar.getInstance().get(Calendar.MONTH) + 1);
         monthImage.setImageResource(Helper.getResId(activity.getApplicationContext(), "drawable", month));
 
         final AppDatabase database = Room.databaseBuilder(activity.getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
