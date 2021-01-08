@@ -19,12 +19,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.room.Room;
 
+import com.blankj.utilcode.util.FragmentUtils;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.entities.ContentFavorite;
+import com.dreamingbetter.tiramisu.ui.share.ShareFragment;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.dreamingbetter.tiramisu.utils.UpdateQuoteEvent;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -79,7 +81,7 @@ public class HomeFragment extends Fragment {
         RoundedImageView monthImage = view.findViewById(R.id.content_image);
 
         // Set the month image
-        String month = String.format(Locale.getDefault(), "month_%02d", Calendar.getInstance().get(Calendar.MONTH));
+        String month = String.format(Locale.getDefault(), "month_%02d", Calendar.getInstance().get(Calendar.MONTH) + 1);
         monthImage.setImageResource(Helper.getResId(activity.getApplicationContext(), "drawable", month));
 
         final AppDatabase database = Room.databaseBuilder(activity.getApplicationContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
@@ -168,16 +170,13 @@ public class HomeFragment extends Fragment {
         LinearLayout buttons = view.findViewById(R.id.buttons);
         buttons.setVisibility(View.VISIBLE);
 
+        final HomeFragment homeFragment = this;
         ImageView shareButton = view.findViewById(R.id.share_button);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.format("\n%s%s\"", '"', content.text) + " - " + content.author + "\n\n" + getString(R.string.app_name) + "\nAvailable on Google Play Store");
-                sharingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(Intent.createChooser(sharingIntent, getString(R.string.share)));
+                Hawk.put("lastSharedContent", content);
+                FragmentUtils.replace(homeFragment, new ShareFragment());
             }
         });
     }

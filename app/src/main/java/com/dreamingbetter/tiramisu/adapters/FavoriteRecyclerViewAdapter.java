@@ -13,10 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.FragmentUtils;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.database.AppDatabase;
 import com.dreamingbetter.tiramisu.entities.Content;
 import com.dreamingbetter.tiramisu.ui.favorite.FavoriteFragment;
+import com.dreamingbetter.tiramisu.ui.share.ShareFragment;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.List;
 
@@ -70,6 +73,14 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
                         }).show();
             }
         });
+
+        holder.mShareButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Hawk.put("lastSharedContent", holder.mItem);
+                FragmentUtils.replace(mFragment, new ShareFragment());
+            }
+        });
     }
 
     @Override
@@ -82,6 +93,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
         final TextView mContentView;
         final TextView mAuthorView;
         final ImageView mFavoriteButtonView;
+        final ImageView mShareButtonView;
         Content mItem;
 
         ViewHolder(View view) {
@@ -91,6 +103,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
             mContentView = view.findViewById(R.id.item_content);
             mAuthorView = view.findViewById(R.id.item_author);
             mFavoriteButtonView = view.findViewById(R.id.item_favorite_button);
+            mShareButtonView = view.findViewById(R.id.item_share_button);
         }
 
         @NonNull

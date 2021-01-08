@@ -1,14 +1,18 @@
 package com.dreamingbetter.tiramisu.utils;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 import androidx.room.Room;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -24,6 +28,8 @@ import com.orhanobut.hawk.Hawk;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -35,7 +41,7 @@ public class Helper {
 
         Intent intentAction = new Intent(context, NotificationActionReceiver.class);
         intentAction.putExtra("action","addOrRemoveToFavorites");
-        intentAction.putExtra("uid",content.uid);
+        intentAction.putExtra("uid", content.uid);
 
         String title = content.author;
         String message = String.format("%s%s\"", '"', content.text);
@@ -54,7 +60,7 @@ public class Helper {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .addAction(R.drawable.ic_star_primary_24dp,
-                        (database.contentFavoriteDao().isFavorite(content.uid) == 1) ? context.getString(R.string.removed_from_favorite) : context.getString(R.string.add_to_favorites),
+                        (database.contentFavoriteDao().isFavorite(content.uid) == 1) ? context.getString(R.string.remove_from_favorites) : context.getString(R.string.add_to_favorites),
                         PendingIntent.getBroadcast(context, requestCode, intentAction, PendingIntent.FLAG_UPDATE_CURRENT)
                 );
 
@@ -148,6 +154,23 @@ public class Helper {
         if (diff >= 24) {
             Helper.updateQuote(context);
         }
+    }
 
+    @SuppressLint("SetWorldReadable")
+    public static Uri shareUriBitmap(Context context, Bitmap bitmap) {
+        try {
+            File file = new File(context.getCacheDir(), System.currentTimeMillis() / 1000 + ".png");
+            FileOutputStream fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            //noinspection ResultOfMethodCallIgnored
+            file.setReadable(true, false);
+            return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

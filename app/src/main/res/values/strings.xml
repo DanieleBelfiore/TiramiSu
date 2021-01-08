@@ -26,4 +26,6 @@
     <string name="read_quotes">Citazioni lette</string>
     <string name="version">Versione</string>
     <string name="add_to_favorites">Aggiungi ai preferiti</string>
+    <string name="remove_from_favorites">Rimuovi dai preferiti</string>
+    <string name="get_it_on">Disponibile su</string>
 </resources>
