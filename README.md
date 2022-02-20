@@ -71,6 +71,13 @@ In this project I used [Firebase Realtime Database](https://firebase.google.com/
 
 You can import this json file to insert the contents in the **Firebase Realtime Database**.
 
+I manage the quotes through a Google Spreadsheet doc, with a sheet for each language and every sheet has three columns (the structure of contents):
+- uid
+- author
+- text
+
+Then I create the json file starting from the doc through this [Google App Script](Export.gs) that sort alphabetically the doc and create the json file to import in the **Firebase Realtime Database**.
+
 If you needs more explanations, please [contact me](mailto:danielebelfiorepc@gmail.com).
 
 ## Clarification
