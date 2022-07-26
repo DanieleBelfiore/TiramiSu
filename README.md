@@ -1,3 +1,42 @@
+<!-- General Meta Tags -->
+<meta charset="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=text/html; charset=utf-8">
+<meta name="language" content="English">
+<meta name="robots" content="index, follow">
+<meta name="revisit-after" content="8 days">
+
+<!-- Default Meta Tags -->
+<meta name="title" content="TiramiSu!">
+<meta name="description" content="An Android App to help to think positive, every day a new positive thought!">
+<meta name="author" content="Daniele Belfiore">
+<meta name="keywords" content="think positive, positive thought, tiramisu, happiness, android">
+<meta name="url" content="https://github.com/DanieleBelfiore/TiramiSu">
+<meta name="image" content="https://github.com/DanieleBelfiore/TiramiSu/raw/master/logo.png">
+
+<!-- Google / Search Engine Tags -->
+<meta itemprop="title" content="TiramiSu!">
+<meta itemprop="description" content="An Android App to help to think positive, every day a new positive thought!">
+<meta itemprop="author" content="Daniele Belfiore">
+<meta itemprop="keywords" content="think positive, positive thought, tiramisu, happiness, android">
+<meta itemprop="url" content="https://github.com/DanieleBelfiore/TiramiSu">
+<meta itemprop="image" content="https://github.com/DanieleBelfiore/TiramiSu/raw/master/logo.png">
+
+<!-- Facebook Meta Tags -->
+<meta property="og:title" content="TiramiSu!">
+<meta property="og:description" content="An Android App to help to think positive, every day a new positive thought!">
+<meta property="og:author" content="Daniele Belfiore">
+<meta property="og:keywords" content="think positive, positive thought, tiramisu, happiness, android">
+<meta property="og:url" content="https://github.com/DanieleBelfiore/TiramiSu">
+<meta property="og:image" content="https://github.com/DanieleBelfiore/TiramiSu/raw/master/logo.png">
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:title" content="TiramiSu!">
+<meta name="twitter:description" content="An Android App to help to think positive, every day a new positive thought!">
+<meta name="twitter:author" content="Daniele Belfiore">
+<meta name="twitter:keywords" content="think positive, positive thought, tiramisu, happiness, android">
+<meta name="twitter:url" content="https://github.com/DanieleBelfiore/TiramiSu">
+<meta name="twitter:image" content="https://github.com/DanieleBelfiore/TiramiSu/raw/master/logo.png">
+
 # TiramiSu!
 An Android App to help to think positive, every day a new positive thought!
 
