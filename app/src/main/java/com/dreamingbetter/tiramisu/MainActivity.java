@@ -1,6 +1,5 @@
 package com.dreamingbetter.tiramisu;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -109,12 +108,7 @@ public class MainActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.network_error)
                     .setCancelable(false)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            AppUtils.exitApp();
-                        }
-                    }).show();
+                    .setPositiveButton(R.string.ok, (paramDialogInterface, paramInt) -> AppUtils.exitApp()).show();
         }
 
         Helper.checkNewQuote(getApplicationContext());

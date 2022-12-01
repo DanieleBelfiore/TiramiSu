@@ -5,7 +5,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,39 +46,28 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
         holder.mContentView.setText(String.format("%s%s\"", '"', holder.mItem.text));
         holder.mAuthorView.setText(String.format("%s ", holder.mItem.author));
 
-        holder.mFavoriteButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(holder.mView.getContext())
-                        .setMessage(R.string.alert_remove_favorite)
-                        .setCancelable(true)
-                        .setNegativeButton("No", null)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                AppDatabase database = Room.databaseBuilder(holder.mView.getContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
-                                database.contentFavoriteDao().delete(holder.mItem.uid);
+        holder.mFavoriteButtonView.setOnClickListener(v -> new AlertDialog.Builder(holder.mView.getContext())
+                .setMessage(R.string.alert_remove_favorite)
+                .setCancelable(true)
+                .setNegativeButton("No", null)
+                .setPositiveButton(R.string.yes, (paramDialogInterface, paramInt) -> {
+                    AppDatabase database = Room.databaseBuilder(holder.mView.getContext(), AppDatabase.class, "db").allowMainThreadQueries().build();
+                    database.contentFavoriteDao().delete(holder.mItem.uid);
 
-                                Toast.makeText(holder.mView.getContext(), R.string.removed_from_favorite, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(holder.mView.getContext(), R.string.removed_from_favorite, Toast.LENGTH_SHORT).show();
 
-                                holder.mView.setVisibility(View.GONE);
+                    holder.mView.setVisibility(View.GONE);
 
-                                List<Content> dataset = database.contentDao().getAllFavorites();
+                    List<Content> dataset = database.contentDao().getAllFavorites();
 
-                                if (dataset.isEmpty()) {
-                                    mFragment.goToHome();
-                                }
-                            }
-                        }).show();
-            }
-        });
+                    if (dataset.isEmpty()) {
+                        mFragment.goToHome();
+                    }
+                }).show());
 
-        holder.mShareButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Hawk.put("lastSharedContent", holder.mItem);
-                FragmentUtils.replace(mFragment, new ShareFragment());
-            }
+        holder.mShareButtonView.setOnClickListener(v -> {
+            Hawk.put("lastSharedContent", holder.mItem);
+            FragmentUtils.replace(mFragment, new ShareFragment());
         });
     }
 

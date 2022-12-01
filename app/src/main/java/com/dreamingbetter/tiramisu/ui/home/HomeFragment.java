@@ -96,31 +96,28 @@ public class HomeFragment extends Fragment {
 
         final Button favoriteButton = view.findViewById(R.id.favorite_button);
 
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                YoYo.with(Techniques.Pulse).duration(500).playOn(favoriteButton);
+        favoriteButton.setOnClickListener(v -> {
+            YoYo.with(Techniques.Pulse).duration(500).playOn(favoriteButton);
 
-                if (database.contentFavoriteDao().isFavorite(content.uid) == 1) {
-                    database.contentFavoriteDao().delete(content.uid);
+            if (database.contentFavoriteDao().isFavorite(content.uid) == 1) {
+                database.contentFavoriteDao().delete(content.uid);
 
-                    Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.fa_regular);
-                    favoriteButton.setTypeface(typeface);
+                Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.fa_regular);
+                favoriteButton.setTypeface(typeface);
 
-                    Toast.makeText(activity.getApplicationContext(), R.string.removed_from_favorite, Toast.LENGTH_SHORT).show();
-                } else {
-                    ContentFavorite c = new ContentFavorite();
+                Toast.makeText(activity.getApplicationContext(), R.string.removed_from_favorite, Toast.LENGTH_SHORT).show();
+            } else {
+                ContentFavorite c = new ContentFavorite();
 
-                    c.uid = content.uid;
-                    c.timestamp = System.currentTimeMillis();
+                c.uid = content.uid;
+                c.timestamp = System.currentTimeMillis();
 
-                    database.contentFavoriteDao().insert(c);
+                database.contentFavoriteDao().insert(c);
 
-                    Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.fa_solid);
-                    favoriteButton.setTypeface(typeface);
+                Typeface typeface = ResourcesCompat.getFont(activity.getApplicationContext(), R.font.fa_solid);
+                favoriteButton.setTypeface(typeface);
 
-                    Toast.makeText(activity.getApplicationContext(), R.string.added_to_favorite, Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(activity.getApplicationContext(), R.string.added_to_favorite, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -130,41 +127,35 @@ public class HomeFragment extends Fragment {
         }
 
         Button amazonButton = view.findViewById(R.id.amazon_button);
-        amazonButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String query = content.author.replace(" ", "+");
-                String lang = "it";
+        amazonButton.setOnClickListener(v -> {
+            String query = content.author.replace(" ", "+");
+            String lang = "it";
 
-                if (Hawk.get("lang", 0) == 1) {
-                    lang = "com";
-                }
-
-                String url = "https://www.amazon." + lang + "/s?k=" + query;
-
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
+            if (Hawk.get("lang", 0) == 1) {
+                lang = "com";
             }
+
+            String url = "https://www.amazon." + lang + "/s?k=" + query;
+
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         });
 
         Button wikipediaButton = view.findViewById(R.id.wikipedia_button);
-        wikipediaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String query = content.author.replace(" ", "_");
-                String lang = "it";
+        wikipediaButton.setOnClickListener(v -> {
+            String query = content.author.replace(" ", "_");
+            String lang = "it";
 
-                if (Hawk.get("lang", 0) == 1) {
-                    lang = "en";
-                }
-
-                String url = "https://" + lang + ".wikipedia.org/wiki/" + query;
-
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
+            if (Hawk.get("lang", 0) == 1) {
+                lang = "en";
             }
+
+            String url = "https://" + lang + ".wikipedia.org/wiki/" + query;
+
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         });
 
         LinearLayout buttons = view.findViewById(R.id.buttons);
@@ -172,12 +163,9 @@ public class HomeFragment extends Fragment {
 
         final HomeFragment homeFragment = this;
         ImageView shareButton = view.findViewById(R.id.share_button);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Hawk.put("lastSharedContent", content);
-                FragmentUtils.replace(homeFragment, new ShareFragment());
-            }
+        shareButton.setOnClickListener(v -> {
+            Hawk.put("lastSharedContent", content);
+            FragmentUtils.replace(homeFragment, new ShareFragment());
         });
     }
 }

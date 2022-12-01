@@ -7,9 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
@@ -40,37 +38,27 @@ public class SettingsFragment extends Fragment {
             final TextView readQuotes = root.findViewById(R.id.read_quotes);
 
             notifications.setChecked(Hawk.get("notifications", true));
-            notifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Hawk.put("notifications", isChecked);
-                }
-            });
+            notifications.setOnCheckedChangeListener((buttonView, isChecked) -> Hawk.put("notifications", isChecked));
 
             updateNotificationTimeBtn(notificationTimeButton);
 
-            notificationTimeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Calendar schedule = Calendar.getInstance();
-                    schedule.set(Calendar.HOUR_OF_DAY, Hawk.get("notificationHour", 8));
-                    schedule.set(Calendar.MINUTE, Hawk.get("notificationMinute", 0));
-                    schedule.set(Calendar.SECOND, 0);
+            notificationTimeButton.setOnClickListener(v -> {
+                Calendar schedule = Calendar.getInstance();
+                schedule.set(Calendar.HOUR_OF_DAY, Hawk.get("notificationHour", 8));
+                schedule.set(Calendar.MINUTE, Hawk.get("notificationMinute", 0));
+                schedule.set(Calendar.SECOND, 0);
 
-                    TimePickerDialog mTimePicker;
-                    mTimePicker = new TimePickerDialog(activity, new TimePickerDialog.OnTimeSetListener() {
-                        @Override
-                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                            Hawk.put("notificationHour", selectedHour);
-                            Hawk.put("notificationMinute", selectedMinute);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(activity, (timePicker, selectedHour, selectedMinute) -> {
+                    Hawk.put("notificationHour", selectedHour);
+                    Hawk.put("notificationMinute", selectedMinute);
 
-                            updateNotificationTimeBtn(notificationTimeButton);
+                    updateNotificationTimeBtn(notificationTimeButton);
 
-                            Helper.addWorker(activity.getApplicationContext(), "nextQuote");
-                        }
-                    }, schedule.get(Calendar.HOUR_OF_DAY), schedule.get(Calendar.MINUTE), true);
-                    mTimePicker.setTitle("Select Time");
-                    mTimePicker.show();
-                }
+                    Helper.addWorker(activity.getApplicationContext(), "nextQuote");
+                }, schedule.get(Calendar.HOUR_OF_DAY), schedule.get(Calendar.MINUTE), true);
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
             });
 
             readQuotes.setText(String.format(Locale.getDefault(),  "%s: %d%%", getString(R.string.read_quotes), readPercentage(activity.getApplicationContext())));
