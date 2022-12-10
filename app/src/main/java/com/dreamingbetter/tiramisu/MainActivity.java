@@ -1,8 +1,11 @@
 package com.dreamingbetter.tiramisu;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.Manifest;
 
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.GsonUtils;
@@ -21,10 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.orhanobut.hawk.Hawk;
 import com.orhanobut.logger.Logger;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -112,6 +117,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Helper.checkNewQuote(getApplicationContext());
+
+        boolean notificationsEnabled = Hawk.get("notifications", true);
+        if (notificationsEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                }).launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
 
         Helper.addWorker(getApplicationContext(), "nextQuote");
     }
