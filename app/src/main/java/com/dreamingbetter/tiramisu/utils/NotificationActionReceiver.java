@@ -25,10 +25,6 @@ public class NotificationActionReceiver extends BroadcastReceiver {
                 NotificationManagerCompat.from(context).cancel(R.string.app_name);
             }
         }
-
-        //This is used to dismiss the notification and close the tray
-        //Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        //context.sendBroadcast(it);
     }
 
     public void addOrRemoveToFavorites(Context context, String uid) {

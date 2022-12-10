@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Helper {
     public static void sendQuoteNotification(Context context, int requestCode, Content content) {
-        PendingIntent pIntent = PendingIntent.getActivity(context, requestCode, new Intent(context, MainActivity.class), PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pIntent = PendingIntent.getActivity(context, requestCode, new Intent(context, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
 
         Intent intentAction = new Intent(context, NotificationActionReceiver.class);
         intentAction.putExtra("action","addOrRemoveToFavorites");
@@ -61,7 +61,7 @@ public class Helper {
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .addAction(R.drawable.ic_star_primary_24dp,
                         (database.contentFavoriteDao().isFavorite(content.uid) == 1) ? context.getString(R.string.remove_from_favorites) : context.getString(R.string.add_to_favorites),
-                        PendingIntent.getBroadcast(context, requestCode, intentAction, PendingIntent.FLAG_UPDATE_CURRENT)
+                        PendingIntent.getBroadcast(context, requestCode, intentAction, PendingIntent.FLAG_IMMUTABLE)
                 );
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -141,6 +141,7 @@ public class Helper {
         WorkManager.getInstance(context).enqueue(dailyWorkRequest);
     }
 
+    @SuppressLint("DiscouragedApi")
     public static int getResId(Context context, String category, String id) {
         return context.getResources().getIdentifier(id, category,  context.getPackageName());
     }

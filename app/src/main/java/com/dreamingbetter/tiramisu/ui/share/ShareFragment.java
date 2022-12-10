@@ -1,5 +1,6 @@
 package com.dreamingbetter.tiramisu.ui.share;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -7,10 +8,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -30,6 +32,16 @@ import java.util.Locale;
 @SuppressWarnings("WeakerAccess")
 public class ShareFragment extends Fragment {
     FragmentActivity activity;
+
+    final ActivityResultLauncher<Intent> updateUiResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            ActivityCompat.finishAffinity(activity);
+
+            Intent i = new Intent(getActivity(), MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        }
+    });
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_share, container, false);
@@ -62,29 +74,15 @@ public class ShareFragment extends Fragment {
 
         final LinearLayout sharingContentView = view.findViewById(R.id.sharing_content);
 
-        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Bitmap bm = ConvertUtils.view2Bitmap(sharingContentView);
-                Uri uri = Helper.shareUriBitmap(activity.getApplicationContext(), bm);
+        view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Bitmap bm = ConvertUtils.view2Bitmap(sharingContentView);
+            Uri uri = Helper.shareUriBitmap(activity.getApplicationContext(), bm);
 
-                Intent i = new Intent();
-                i.setDataAndType(uri, "image/*");
-                i.setAction(Intent.ACTION_VIEW);
-                i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivityForResult(i, 1);
-            }
+            Intent i = new Intent();
+            i.setDataAndType(uri, "image/*");
+            i.setAction(Intent.ACTION_VIEW);
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            updateUiResultLauncher.launch(i);
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        ActivityCompat.finishAffinity(activity);
-
-        Intent i = new Intent(getActivity(), MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
     }
 }
