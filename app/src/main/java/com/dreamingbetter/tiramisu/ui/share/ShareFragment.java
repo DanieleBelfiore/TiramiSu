@@ -1,7 +1,5 @@
 package com.dreamingbetter.tiramisu.ui.share;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,37 +9,27 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.blankj.utilcode.util.ConvertUtils;
-import com.dreamingbetter.tiramisu.MainActivity;
+import com.blankj.utilcode.util.FragmentUtils;
+import com.blankj.utilcode.util.IntentUtils;
 import com.dreamingbetter.tiramisu.R;
 import com.dreamingbetter.tiramisu.entities.Content;
+import com.dreamingbetter.tiramisu.ui.home.HomeFragment;
 import com.dreamingbetter.tiramisu.utils.Helper;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("WeakerAccess")
 public class ShareFragment extends Fragment {
     FragmentActivity activity;
-
-    final ActivityResultLauncher<Intent> updateUiResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            ActivityCompat.finishAffinity(activity);
-
-            Intent i = new Intent(getActivity(), MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-        }
-    });
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_share, container, false);
@@ -74,15 +62,21 @@ public class ShareFragment extends Fragment {
 
         final LinearLayout sharingContentView = view.findViewById(R.id.sharing_content);
 
+        AtomicInteger count = new AtomicInteger();
+
         view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            count.getAndIncrement();
+
             Bitmap bm = ConvertUtils.view2Bitmap(sharingContentView);
             Uri uri = Helper.shareUriBitmap(activity.getApplicationContext(), bm);
 
-            Intent i = new Intent();
-            i.setDataAndType(uri, "image/*");
-            i.setAction(Intent.ACTION_VIEW);
-            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            updateUiResultLauncher.launch(i);
+            // Run the intent only the first time
+            if (count.get() == 1) {
+                startActivity(IntentUtils.getShareImageIntent(uri));
+            } else {
+                final ShareFragment shareFragment = this;
+                FragmentUtils.replace(shareFragment, new HomeFragment());
+            }
         });
     }
 }
